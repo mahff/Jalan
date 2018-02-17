@@ -1,6 +1,8 @@
 package graphic;
 
-import java.io.FileInputStream;
+import java.io.File;
+
+import org.apache.batik.swing.JSVGCanvas;
 
 import javafx.application.Application;
 import javafx.beans.InvalidationListener;
@@ -10,35 +12,22 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 
 
 
 public class Zooming extends Application {
+	static JSVGCanvas image = new JSVGCanvas();
 
-    private ImageView imageView = new ImageView(); 
+    private ImageView imageView = new ImageView();
     private ScrollPane scrollPane = new ScrollPane();
     final DoubleProperty zoomProperty = new SimpleDoubleProperty(200);
-    Slider slider = new Slider();
-   
-    SVGPath svgpath = new SVGPath();
-    String path = "M 100 100 L 300 100 L 200 300 z";
-    
-    
 
     @Override
     public void start(Stage stage) throws Exception {
-    	 slider.setMin(0);
-    	 slider.setMax(100);
-    	 slider.setValue(100);
-    	 slider.setShowTickLabels(true);
-         slider.setShowTickMarks(true);
-         slider.setBlockIncrement(10);
+
         zoomProperty.addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable arg0) {
@@ -57,20 +46,17 @@ public class Zooming extends Application {
                 }
             }
         });
-
-        imageView = new ImageView(new Image(new FileInputStream("/home/mahff/Bureau/génie_Logiciel/Jalan-Uml.png"), 1800, 1500, true, true));
+       
+        image.setURI(new File("/home/mahff/Téléchargements/map/map.svg").toURI().toString());
         imageView.preserveRatioProperty().set(true);
         scrollPane.setContent(imageView);
         
-        stage.setScene(new Scene(scrollPane, 600, 400));
+        stage.setScene(new Scene(scrollPane, 400, 300));
         stage.show();
 
     }
-
 
     public static void main(String[] args) {
         launch(args);
     }
 }
-    
-  
