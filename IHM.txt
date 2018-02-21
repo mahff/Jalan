@@ -1,0 +1,10 @@
+5 fenetres :
+	-main
+	-option
+	-cartes
+	-sugestions
+	-summary
+
+style :
+	-flat
+	-trait de couleur
