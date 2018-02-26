@@ -40,6 +40,7 @@ public class OSMCompressor{
 				Node node = new Node(tag);
 				minLatitude = Double.parseDouble(node.getAttribute("minlat"));
 				minLongitude = Double.parseDouble(node.getAttribute("minlon"));
+				writer.write("<"+minLatitude+"#"+minLongitude+">\n");
 			}
 			else if((tag.trim().startsWith("<node")||tag.trim().startsWith("<way"))||tag.trim().startsWith("<relation")){
 				if(tag.endsWith("/>")){
@@ -90,7 +91,7 @@ public class OSMCompressor{
 			}
 			System.out.print("\033[H\033[2J");  
 		    System.out.flush();
-			System.out.println("Processing:"+k*100/4376861+"%");
+			System.out.println("Compressing:"+k*100/4376861+"%");
 		}
 	}
 }
