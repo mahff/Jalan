@@ -20,12 +20,19 @@ public class JALRules {
 		for(String component : components){
 			Matcher matcher = address.matcher(component);
 			
+			//bounds of the map
+			if(component.startsWith("<")){
+				node.rename("meta");
+				node.addChild(new Node("<minlat>"+component.substring(1,component.indexOf("#"))+"</minlat>"));
+				node.addChild(new Node("<minlon>"+component.substring(component.indexOf("#")+1,component.length()-1)+"</minlon>"));
+			}
+			
 			//Types of jal Nodes
 			if(component.equals("way"))
 				node.rename("way");
 			if(component.equals("relation"))
 				node.rename("relation");
-			if(component.equals("area=yes"))
+			if(component.equals("area=yes")||component.equals("natural=water"))
 				node.rename("area");
 			if(component.equals("type=route"))
 				node.rename("route");
@@ -59,7 +66,7 @@ public class JALRules {
 			if(component.equals("amenity=cafe"))
 				node.addChild(new Node("<food>cafe</food>"));
 			if(component.startsWith("colour="))
-				node.addChild(new Node("<color>"+component.substring(6)+"</color>"));
+				node.addChild(new Node("<color>"+component.substring(7)+"</color>"));
 			if((component.equals("highway=motorway")||component.equals("highway=motorway_link"))||(component.equals("highway=trunk")||component.equals("highway=trunk_link")))
 				node.addChild(new Node("<road>motorway</road>"));
 			if((component.equals("highway=primary")||component.equals("highway=primary_link"))||(component.equals("highway=secondary")||component.equals("highway=secondary_link")))
@@ -98,8 +105,10 @@ public class JALRules {
 				node.addChild(new Node("<postoffice />"));
 			if(component.equals("amenity=parking"))
 				node.addChild(new Node("<parking />"));
-			if(component.equals("type=multipolygon"))
+			if(component.equals("type=multipolygon")){
 				node.addChild(new Node("<multipolygon />"));
+				node.rename("area");
+			}
 			if(component.startsWith("busway=")||component.startsWith("bus_bay="))
 				node.addChild(new Node("<busway />"));
 			if(component.equals("amenity=atm")||component.equals("amenity=bureau_de_change"))
@@ -249,6 +258,16 @@ public class JALRules {
 						node.addChild(new Node("<airport>aerodrome</airport>"));
 					break;
 				}
+			}
+			
+			//Subnodes
+			if(component.startsWith("(subnode=")){
+				String 	content[] = component.substring(9,component.length()-1).split(",");
+				node.addChild(new Node("<subnode>"+content[0]+"</subnode>"));
+			}
+			if(component.startsWith("[subnode=")){
+				String 	content[] = component.substring(9,component.length()-1).split(",");
+				node.addChild(new Node("<subway>"+content[0]+"</subway>"));
 			}
 			
 			//Child using regex -> Address elements
