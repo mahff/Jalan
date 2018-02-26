@@ -77,10 +77,20 @@ public class Node{
 	}
 	
 	public void rename(String newName){
+		String name = this.getName();
 		int cutPoint = tag.indexOf(" ");
 		tag = "<"+newName+tag.substring(cutPoint,tag.length());
-		cutPoint = tag.indexOf("</")+2;
+		cutPoint = tag.indexOf("</"+name)+2;
 		tag = tag.substring(0,cutPoint)+newName+">";
+		name = newName;
+	}
+	
+	public Node getChild(String name){
+		int beginPoint = tag.indexOf("<"+name);
+		int endPoint = tag.indexOf("</"+name)+3+name.length();
+		if(endPoint==2+name.length()) endPoint = tag.substring(beginPoint).indexOf("/>")+2;
+		String child = tag.substring(beginPoint,endPoint);
+		return new Node(child);
 	}
 	
 	public String toString(){
