@@ -1,8 +1,8 @@
-package transport;
+package route;
 
 import java.util.Date;
 
-public abstract class PublicTransport extends TransportMode{
+public abstract class PublicRoute extends Route{
 	
 	public float price; 
 	public Date startHour; 
@@ -40,8 +40,4 @@ public abstract class PublicTransport extends TransportMode{
 	public void setFrequency(int frequency) {
 		this.frequency = frequency;
 	}
-	
-	
-	
-
 }
