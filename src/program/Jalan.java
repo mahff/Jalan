@@ -1,4 +1,5 @@
-package graphic;
+package program;
+import graphic.*;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -22,11 +23,11 @@ import javax.swing.SwingUtilities;
 
 import org.apache.batik.swing.JSVGCanvas;
 
-public class MyWindow {
+public class Jalan {
 
 	static JSVGCanvas image = new JSVGCanvas();
 
-	public MyWindow() {
+	public Jalan() {
 		JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, MyWindow.SearchArea(), MyWindow.OptionArea());
 		JSplitPane sp2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, sp, MyWindow.suggestionSummary());
 		sp.setDividerLocation(80);
@@ -116,7 +117,7 @@ public class MyWindow {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new MyWindow();
+				new Jalan();
 			}
 		});
 	}
