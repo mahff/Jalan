@@ -102,35 +102,35 @@ public class JALRules {
 			
 			//Simple children
 			if(component.equals("amenity=post_office"))
-				node.addChild(new Node("<postoffice />"));
+				node.addChild(new Node("<postoffice/>"));
 			if(component.equals("amenity=parking"))
-				node.addChild(new Node("<parking />"));
+				node.addChild(new Node("<parking/>"));
 			if(component.equals("type=multipolygon")){
-				node.addChild(new Node("<multipolygon />"));
+				node.addChild(new Node("<multipolygon/>"));
 				node.rename("area");
 			}
 			if(component.startsWith("busway=")||component.startsWith("bus_bay="))
-				node.addChild(new Node("<busway />"));
+				node.addChild(new Node("<busway/>"));
 			if(component.equals("amenity=atm")||component.equals("amenity=bureau_de_change"))
-				node.addChild(new Node("<atm />"));
+				node.addChild(new Node("<atm/>"));
 			if(component.equals("junction=roundabout")||component.equals("junction=mini_roundabout"))
-				node.addChild(new Node("<roundabout />"));
+				node.addChild(new Node("<roundabout/>"));
 			if((component.equals("tourism=hotel")||component.equals("tourism=motel"))||component.equals("tourism=hostel"))
-				node.addChild(new Node("<hotel />"));
+				node.addChild(new Node("<hotel/>"));
 			if((component.equals("shop=convenience")||component.equals("shop=mall"))||(component.equals("shop=department_store")||component.equals("shop=supermarket")))
-				node.addChild(new Node("<commercial />"));
+				node.addChild(new Node("<commercial/>"));
 			if((component.equals("highway=living_street")||component.equals("highway=pedestrian"))||((component.equals("highway=footway")||component.equals("highway=steps"))||(component.equals("highway=path")||component.equals("highway=cycleway"))))
-				node.addChild(new Node("<pedestrian />"));
+				node.addChild(new Node("<pedestrian/>"));
 			if(component.equals("highway=bus_stop"))
-				node.addChild(new Node("<busstation />"));
+				node.addChild(new Node("<busstation/>"));
 			if(component.equals("amenity=ferry_terminal"))
-				node.addChild(new Node("<ferrystation />"));
+				node.addChild(new Node("<ferrystation/>"));
 			if(component.equals("underground=station"))
-				node.addChild(new Node("<railstation />"));
+				node.addChild(new Node("<railstation/>"));
 			if(component.equals("natural=beach"))
-				node.addChild(new Node("<beach />"));
+				node.addChild(new Node("<beach/>"));
 			if(component.equals("leisure=garden")||component.equals("leisure=park"))
-				node.addChild(new Node("<park />"));
+				node.addChild(new Node("<park/>"));
 			
 			//Buildings
 			if(component.startsWith("building=")){
@@ -171,25 +171,25 @@ public class JALRules {
 			if(component.startsWith("route=")){
 				switch(component.substring(6)){
 					case "bus":
-						node.addChild(new Node("<type>bus</bus>"));
+						node.addChild(new Node("<type>bus</type"));
 					break;
 					case "ferry":
-						node.addChild(new Node("<type>ferry</bus>"));
+						node.addChild(new Node("<type>ferry</type>"));
 					break;
 					case "tram":
-						node.addChild(new Node("<type>rail</bus>"));
+						node.addChild(new Node("<type>rail</type>"));
 					break;
 					case "train":
-						node.addChild(new Node("<type>rail</bus>"));
+						node.addChild(new Node("<type>rail</type>"));
 					break;
 					case "light_rail":
-						node.addChild(new Node("<type>rail</bus>"));
+						node.addChild(new Node("<type>rail</type>"));
 					break;
 					case "road":
-						node.addChild(new Node("<type>road</bus>"));
+						node.addChild(new Node("<type>road</type>"));
 					break;
 					case "railway":
-						node.addChild(new Node("<type>rail</bus>"));
+						node.addChild(new Node("<type>rail</type>"));
 					break;
 				}
 			}
@@ -198,22 +198,22 @@ public class JALRules {
 			if(component.startsWith("railway=")){
 				switch(component.substring(8)){
 					case "light_rail":
-						node.addChild(new Node("<railway />"));
+						node.addChild(new Node("<railway/>"));
 					break;
 					case "rail":
-						node.addChild(new Node("<railway />"));
+						node.addChild(new Node("<railway/>"));
 					break;
 					case "tram":
-						node.addChild(new Node("<railway />"));
+						node.addChild(new Node("<railway/>"));
 					break;
 					case "halt":
-						node.addChild(new Node("<railstation />"));
+						node.addChild(new Node("<railstation/>"));
 					break;
 					case "tram_stop":
-						node.addChild(new Node("<railstation />"));
+						node.addChild(new Node("<railstation/>"));
 					break;
 					case "station":
-						node.addChild(new Node("<railstation />"));
+						node.addChild(new Node("<railstation/>"));
 					break;
 				}
 			}
