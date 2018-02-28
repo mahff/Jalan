@@ -32,7 +32,7 @@ public class JALBuilder{
 		JALRules rules = new JALRules();
 		int i = 1;
 		
-		writer.write("<?xml version=\"1.0\" charset=\"UTF-8\" ?>\n<jalan>\n");
+		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<jalan>\n");
 		
 		while((line = reader.readLine())!=null){
 			writer.write("\t"+rules.format(line)+"\n");
