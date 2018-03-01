@@ -171,7 +171,7 @@ public class JALRules {
 			if(component.startsWith("route=")){
 				switch(component.substring(6)){
 					case "bus":
-						node.addChild(new Node("<type>bus</type"));
+						node.addChild(new Node("<type>bus</type>"));
 					break;
 					case "ferry":
 						node.addChild(new Node("<type>ferry</type>"));
