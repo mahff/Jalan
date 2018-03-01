@@ -19,7 +19,6 @@ public class SearchArea {
 		pane.setLayout(new GridLayout(0, 1));
 		JLabel departure = new JLabel("Departure : ");
 		JLabel arrival = new JLabel("Arrival : ");
-
 		
 		pane.add(departure);
 		pane.add(departureField);
