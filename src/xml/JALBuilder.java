@@ -35,7 +35,7 @@ public class JALBuilder{
 		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<jalan>\n");
 		
 		while((line = reader.readLine())!=null){
-			writer.write("\t"+rules.format(line)+"\n");
+			writer.write("\t"+rules.format(rules.catchGhostAreas(line))+"\n");
 			System.out.print("\033[H\033[2J");  
 		    System.out.flush();
 			System.out.println("Built Node Set n°"+(i++));
