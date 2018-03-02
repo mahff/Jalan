@@ -267,7 +267,7 @@ public class JALRules {
 			}
 			if(component.startsWith("[subnode=")){
 				String 	content[] = component.substring(9,component.length()-1).split(",");
-				node.addChild(new Node("<subway>"+content[0]+"</subway>"));
+				node.addChild(new Node("<subway role=\""+content[1]+"\">"+content[0]+"</subway>"));
 			}
 			
 			//Child using regex -> Address elements
@@ -284,5 +284,24 @@ public class JALRules {
 			
 		}
 		return node;
+	}
+	
+	public String catchGhostAreas(String data){
+		boolean firstSubnodeFound = false;
+		String firstSubnodeId = "foo", currentSubnodeId = "goo";
+		String[] components = data.split("::");
+		for(String component : components){
+			if(component.startsWith("(subnode=")) {
+				if(firstSubnodeFound==false){
+					firstSubnodeFound = true;
+					firstSubnodeId = component.substring(9, component.length()-1);
+				}
+				currentSubnodeId = component.substring(9, component.length()-1);
+			}
+		}
+		if(currentSubnodeId==firstSubnodeId){
+			return data+"::area=yes";
+		}
+		return data;
 	}
 }
