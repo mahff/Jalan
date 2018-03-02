@@ -13,6 +13,7 @@ public class JALDocument {
 	private XMLInputFactory factory = XMLInputFactory.newInstance();
 	private XMLStreamReader stream;
 	private String file;
+	private boolean isTreating;
 	
 	public JALDocument(String file) throws FileNotFoundException, XMLStreamException{
 		this.file = file;
@@ -23,7 +24,12 @@ public class JALDocument {
 		stream.close();
 	}
 	
+	public boolean hasEnded() {
+		return isTreating;
+	}
+	
 	public String getElementDataByType(String type) throws XMLStreamException, FileNotFoundException{
+		isTreating = true;
 		int event;
 		String result = "";
 		
@@ -35,9 +41,11 @@ public class JALDocument {
 						while(((event = stream.next())!=XMLEvent.END_DOCUMENT)){
 							
 							switch(event){
+								case XMLEvent.ATTRIBUTE:
+									result += "id="+stream.getAttributeValue(0);
 								case XMLEvent.END_ELEMENT:
 									if(stream.getLocalName()==type)
-										return result.substring(2);
+										return result;
 								break;
 								case XMLEvent.START_ELEMENT:
 									result += "::"+stream.getLocalName();
@@ -56,6 +64,7 @@ public class JALDocument {
 	}
 	
 	public String getElementDataById(String id) throws XMLStreamException, FileNotFoundException{
+		isTreating = true;
 		int event;
 		
 		while(stream.hasNext()){
@@ -93,12 +102,13 @@ public class JALDocument {
 	}
 	
 	public void reset() throws XMLStreamException, FileNotFoundException{
+		isTreating = false;
 		stream.close();
 		stream = factory.createXMLStreamReader(new FileReader(file));
 	}
 	
 	public ArrayList<String> getWaysContaining(String id) throws FileNotFoundException, XMLStreamException{
-		
+		isTreating = true;
 		ArrayList<String> result = new ArrayList<String>();
 		int event;
 		String temporaryId = "0";
@@ -131,7 +141,6 @@ public class JALDocument {
 	}
 	
 	public ArrayList<String> getAdjacentElements(String id) throws XMLStreamException, FileNotFoundException{
-		
 		ArrayList<String> result = new ArrayList<String>();
 		ArrayList<String> ways = this.getWaysContaining(id);
 		
@@ -144,8 +153,26 @@ public class JALDocument {
 				}
 			}
 		}
-		
 		return result;
 	}
 	
+	public double[] getElementCoords(String id) throws FileNotFoundException, XMLStreamException{
+		double[] result = new double[2];
+		String[] data = getElementDataById(id).split("::");
+		for(String component : data){
+			if(component.startsWith("lon=")) result[1] = Double.parseDouble(component.substring(4));
+			if(component.startsWith("lat=")) result[0] = Double.parseDouble(component.substring(4));
+		}
+		return result;
+	}
+	
+	public boolean isWalkable(String id) throws FileNotFoundException, XMLStreamException{
+		String[] data = getElementDataById(id).split("::");
+		for(String component : data){
+			if(component.equals("pedestrian")){
+				return true;
+			}
+		}
+		return false;
+	}
 }
