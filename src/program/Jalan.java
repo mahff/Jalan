@@ -18,7 +18,7 @@ public class Jalan extends JFrame {
     	JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, SearchArea.SearchFrame(), Options.OptionArea());
 		JSplitPane sp2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, sp, SuggestionSummary.SuggestionSummaryFrame());
 		sp.setDividerLocation(70);
-		sp2.setDividerLocation(100);
+		sp2.setDividerLocation(125);
 		JFrame frame = new JFrame();
 
 		frame.add(sp2);
