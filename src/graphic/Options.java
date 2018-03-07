@@ -13,17 +13,17 @@ import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerModel;
 
 public class Options {
-	
+
 	public static Component OptionArea() {
 		JButton okButton = new JButton(" Search ");
 		Box topBox = Box.createHorizontalBox();
-		JCheckBox marching = new JCheckBox("Marching");
-		JCheckBox bicyling = new JCheckBox("Bicycling");
-		JCheckBox car = new JCheckBox("Car");
-		JCheckBox ferry = new JCheckBox("Ferry");
-		JCheckBox metro = new JCheckBox("Metro");
-		JCheckBox bus = new JCheckBox("Bus");
-		SpinnerModel model1 = new SpinnerDateModel();
+		final JCheckBox marching = new JCheckBox("Marching");
+		final JCheckBox bicyling = new JCheckBox("Bicycling");
+		final JCheckBox car = new JCheckBox("Car");
+		final JCheckBox ferry = new JCheckBox("Ferry");
+		final JCheckBox metro = new JCheckBox("Metro");
+		final JCheckBox bus = new JCheckBox("Bus");
+		final SpinnerModel model1 = new SpinnerDateModel();
 		JSpinner spinner1 = new JSpinner(model1);
 		topBox.add(marching);
 		topBox.add(bicyling);
@@ -36,6 +36,7 @@ public class Options {
 		ActionListener searchListener = new ActionListener() {
 			String vehicle = "";
 			private String searchinfo = "";
+
 			public void actionPerformed(ActionEvent e) {
 				if (marching.isSelected() == true) {
 					vehicle += "Marching ";
@@ -61,18 +62,25 @@ public class Options {
 					vehicle += "Bus ";
 					setSearchinfo(getSearchinfo() + "bus,");
 				}
-				SuggestionSummary.summary.setText("<html> Departure : " + SearchArea.departureField.getText() + "<br/> " + "Arrival :"
-						+ SearchArea.arrivalField.getText() + "<br/> " + "By : " + vehicle + "<br/> " + model1.getValue() + "</html>");
-				setSearchinfo(getSearchinfo() + SearchArea.departureField.getText() + "," + SearchArea.arrivalField.getText());
+				SuggestionSummary.summary.setText("<html> Departure : "
+						+ SearchArea.departureField.getText() + "<br/> "
+						+ "Arrival :" + SearchArea.arrivalField.getText()
+						+ "<br/> " + "By : " + vehicle + "<br/> "
+						+ model1.getValue() + "</html>");
+				setSearchinfo(getSearchinfo()
+						+ SearchArea.departureField.getText() + ","
+						+ SearchArea.arrivalField.getText() + ",");
 
 			}
+
 			public String getSearchinfo() {
 				return searchinfo;
 			}
+
 			public void setSearchinfo(String searchinfo) {
 				this.searchinfo = searchinfo;
 			}
-			
+
 		};
 		okButton.addActionListener(searchListener);
 
