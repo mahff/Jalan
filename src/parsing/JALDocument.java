@@ -1,178 +1,74 @@
-package parsing;
+package xml;
 
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.events.XMLEvent;
 
-public class JALDocument {
-	private XMLInputFactory factory = XMLInputFactory.newInstance();
-	private XMLStreamReader stream;
+import exception.WrongFormatException;
+import parsing.JALDocument;
+import parsing.JALRules;
+
+public class JALBuilder{
+	private BufferedReader reader;
+	private BufferedReader refinedReader;
+	private BufferedWriter writer;
+	private BufferedWriter temporaryWriter;
 	private String file;
-	private boolean isTreating;
 	
-	public JALDocument(String file) throws FileNotFoundException, XMLStreamException{
-		this.file = file;
-		stream = factory.createXMLStreamReader(new FileReader(file));
+	public JALBuilder(File file) throws IOException, WrongFormatException{
+		if(file.getName().endsWith(".cosm")){
+			this.file = file.getName();
+			reader = new BufferedReader(new FileReader(file));
+			writer = new BufferedWriter(new FileWriter(new File(file.getName().substring(0,file.getName().length()-5)+".jal")));
+			temporaryWriter = new BufferedWriter(new FileWriter(new File(file.getName().substring(0,file.getName().length()-5)+".tmp")));
+			refinedReader = new BufferedReader(new FileReader(new File(file.getName().substring(0,file.getName().length()-5)+".tmp")));
+		}
+		else throw new WrongFormatException(file.getName(),"cosm");
 	}
 	
-	public void close() throws XMLStreamException{
-		stream.close();
-	}
-	
-	public boolean hasEnded() {
-		return isTreating;
-	}
-	
-	public String getElementDataByType(String type) throws XMLStreamException, FileNotFoundException{
-		isTreating = true;
-		int event;
-		String result = "";
+	public void buildFile() throws IOException{
+		String line;
+		JALRules rules = new JALRules();
+		int i = 1;
 		
-		while(stream.hasNext()){
-			event = stream.next();
-			switch(event){
-				case XMLEvent.START_ELEMENT:
-					if(stream.getLocalName()==type){
-						while(((event = stream.next())!=XMLEvent.END_DOCUMENT)){
-							
-							switch(event){
-								case XMLEvent.ATTRIBUTE:
-									result += "id="+stream.getAttributeValue(0);
-								case XMLEvent.END_ELEMENT:
-									if(stream.getLocalName()==type)
-										return result;
-								break;
-								case XMLEvent.START_ELEMENT:
-									result += "::"+stream.getLocalName();
-									if(!stream.isEndElement()){
-										result += "="+stream.getElementText();
-									}
-								break;
-							}
-						}
-					}
-				break;
-			}
-		}
-		this.reset();
-		return result;
-	}
-	
-	public String getElementDataById(String id) throws XMLStreamException, FileNotFoundException{
-		isTreating = true;
-		int event;
+		temporaryWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<jalan>\n");
 		
-		while(stream.hasNext()){
-			event = stream.next();
-			String result = "";
-			switch(event){
-				case XMLEvent.START_ELEMENT:
-					String name = stream.getLocalName();
-					event = stream.next();
-					
-					if(event==XMLEvent.ATTRIBUTE){
-						if(stream.getAttributeValue(0)==id){
-							while(((event = stream.next())!=XMLEvent.END_DOCUMENT)){
-								
-								switch(event){
-									case XMLEvent.END_ELEMENT:
-										if(stream.getLocalName()==name)
-											return result.substring(2);
-									break;
-									case XMLEvent.START_ELEMENT:
-										result += "::"+stream.getLocalName();
-										if(!stream.isEndElement()){
-											result += "="+stream.getElementText();
-										}
-									break;
-								}
-							}
-						}
-					}
-				break;
-			}
+		while((line = reader.readLine())!=null){
+			temporaryWriter.write("\t"+rules.format(line)+"\n");
+			System.out.print("\033[H\033[2J");  
+		    System.out.flush();
+			System.out.println("Built Node Set n°"+(i++));
 		}
-		this.reset();
-		return "";
-	}
-	
-	public void reset() throws XMLStreamException, FileNotFoundException{
-		isTreating = false;
-		stream.close();
-		stream = factory.createXMLStreamReader(new FileReader(file));
-	}
-	
-	public ArrayList<String> getWaysContaining(String id) throws FileNotFoundException, XMLStreamException{
-		isTreating = true;
-		ArrayList<String> result = new ArrayList<String>();
-		int event;
-		String temporaryId = "0";
 		
-		while(stream.hasNext()){
-			event = stream.next();
-			switch(event){
-				case XMLEvent.START_ELEMENT:
-					if(stream.getLocalName()=="way"||stream.getLocalName()=="area"){
-						while(((event = stream.next())!=XMLEvent.END_DOCUMENT)){
-							switch(event){
-								case XMLEvent.ATTRIBUTE:
-									temporaryId = stream.getAttributeValue(0);
-								break;
-								case XMLEvent.START_ELEMENT:
-									if(stream.getLocalName()=="subnode"){
-										if(stream.getElementText()==id){
-											result.add(temporaryId);
-										}
-									}
-								break;
-							}
-						}
-					}
-				break;
-			}
-		}
-		this.reset();
-		return result;
+		temporaryWriter.write("</jalan>");
+		temporaryWriter.close();
+		reader.close();
 	}
 	
-	public ArrayList<String> getAdjacentElements(String id) throws XMLStreamException, FileNotFoundException{
-		ArrayList<String> result = new ArrayList<String>();
-		ArrayList<String> ways = this.getWaysContaining(id);
+	public void refine() throws IOException, XMLStreamException{
+		String line;
+		JALDocument document = new JALDocument(file.substring(0,file.length()-5)+".tmp");
+		Pattern id = Pattern.compile("<subnode>(.*?)</subnode>");
 		
-		for(String wayId : ways){
-			String[] data = this.getElementDataById(wayId).split("::");
-			for(int i=0;i<data.length;i++){
-				if(data[i]==id){
-					if(i-1!=-1) result.add(data[i-1]);
-					if(i+1!=data.length) result.add(data[i+1]);
-				}
+		while((line = refinedReader.readLine())!=null){
+			Matcher matcher = id.matcher(line);
+			if(matcher.find()){
+					String identifier = matcher.group(1);
+					System.out.println("Reached "+matcher.group(1));
+					double[] data = document.getElementCoords(identifier);
+					System.out.println(data[0]+","+data[1]);
+					line = line.substring(0, line.indexOf(identifier)+identifier.length())+","+data[0]+","+data[1]+line.substring(line.indexOf(identifier)+identifier.length(),line.length());
 			}
+			writer.write(line+"\n");
 		}
-		return result;
-	}
-	
-	public double[] getElementCoords(String id) throws FileNotFoundException, XMLStreamException{
-		double[] result = new double[2];
-		String[] data = getElementDataById(id).split("::");
-		for(String component : data){
-			if(component.startsWith("lon=")) result[1] = Double.parseDouble(component.substring(4));
-			if(component.startsWith("lat=")) result[0] = Double.parseDouble(component.substring(4));
-		}
-		return result;
-	}
-	
-	public boolean isWalkable(String id) throws FileNotFoundException, XMLStreamException{
-		String[] data = getElementDataById(id).split("::");
-		for(String component : data){
-			if(component.equals("pedestrian")){
-				return true;
-			}
-		}
-		return false;
+		refinedReader.close();
+		writer.close();
 	}
 }
