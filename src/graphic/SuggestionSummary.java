@@ -8,6 +8,7 @@ import java.io.File;
 
 import javax.swing.Action;
 import javax.swing.ActionMap;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
 
@@ -17,7 +18,7 @@ import org.apache.batik.swing.JSVGScrollPane;
 public class SuggestionSummary {
 
 	static JSVGCanvas image = new JSVGCanvas();
-	static JLabel suggestion = new JLabel();
+	static JComboBox<String> suggestion = new JComboBox<String>();
 	static JLabel summary = new JLabel();
 
 	public static Component SuggestionSummaryFrame() {
@@ -29,32 +30,42 @@ public class SuggestionSummary {
 
 		image.addMouseWheelListener(new MouseWheelListener() {
 
+			int zoomlevel = 3;
+
 			public void mouseWheelMoved(MouseWheelEvent evt) {
 
 				double rotation = evt.getPreciseWheelRotation();
 				ActionMap map = image.getActionMap();
 				Action action = null;
 
-				if (rotation > 0.0) {
-					action = map.get(JSVGCanvas.ZOOM_OUT_ACTION);
+				zoomlevel += rotation;
+
+				if (zoomlevel > 0 && zoomlevel < 4) {
+					if (rotation > 0.0) {
+						action = map.get(JSVGCanvas.ZOOM_OUT_ACTION);
+					} else {
+						action = map.get(JSVGCanvas.ZOOM_IN_ACTION);
+					}
+					action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+				} else if (zoomlevel <= 0){
+					zoomlevel = 1;
 				} else {
-					action = map.get(JSVGCanvas.ZOOM_IN_ACTION);
+					zoomlevel = 3;
 				}
-				action.actionPerformed(new ActionEvent(this,
-						ActionEvent.ACTION_PERFORMED, null));
 			}
 		});
 
-		suggestion.setText("Suggestion");
+		suggestion.addItem("Quickest");
+		suggestion.addItem("Cheapest");
+		suggestion.addItem("Touristic");
+		summary.setText("Summary");
 		summary.setText("Summary");
 		map.setToolTipText("Map");
 
-		JSplitPane sumSug = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-				suggestion, summary);
-		JSplitPane splitMap = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				sumSug, map);
+		JSplitPane sumSug = new JSplitPane(JSplitPane.VERTICAL_SPLIT, suggestion, summary);
+		JSplitPane splitMap = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sumSug, map);
 		splitMap.setDividerLocation(300);
-		sumSug.setDividerLocation(200);
+		sumSug.setDividerLocation(35);
 		return splitMap;
 	}
 

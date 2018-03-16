@@ -34,7 +34,7 @@ public class Options {
 		topBox.add(spinner1);
 
 		ActionListener searchListener = new ActionListener() {
-			String vehicle = "";
+			private String vehicle = "";
 			private String searchinfo = "";
 
 			public void actionPerformed(ActionEvent e) {
@@ -66,7 +66,7 @@ public class Options {
 						+ SearchArea.departureField.getText() + "<br/> "
 						+ "Arrival :" + SearchArea.arrivalField.getText()
 						+ "<br/> " + "By : " + vehicle + "<br/> "
-						+ model1.getValue() + "</html>");
+						+ model1.getValue() + "<br/> " + "</html>");
 				setSearchinfo(getSearchinfo()
 						+ SearchArea.departureField.getText() + ","
 						+ SearchArea.arrivalField.getText() + ",");
