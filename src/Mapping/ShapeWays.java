@@ -1,16 +1,7 @@
 package parsing;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Shape;
-import java.awt.geom.GeneralPath;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import javax.swing.JFrame;
+import java.io.IOException;
 import javax.swing.JPanel;
 import javax.xml.stream.XMLStreamException;
 
@@ -22,78 +13,176 @@ public class ShapeWays extends JPanel {
 	Shape shape;
 
 	public ShapeWays() {
-		DrawWays();
+		try {
+			generateMap();
+		} catch (XMLStreamException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public void DrawWays() {
-		JALDocument call = new JALDocument("singapore.jal"); //CHANGE PATH IF NEED
-		try {
-			for (String index : call.getElementsDataByType("way")) {
-				ArrayList<Double> longi = new ArrayList<Double>();
-				ArrayList<Double> latt = new ArrayList<Double>();
-				String[] content = index.split("::");
-				for (String element : content) {
-					if (element.contains("subnode=")) {
-						String[] data = element.substring(8).split(",");
-						latt.add(Double.parseDouble(data[1]) * 1000);
-						longi.add(Double.parseDouble(data[2]) * 1000);
-						latt.toArray(new Double[latt.size()]);
-						
-						// Transform arralist to array to be able to create generalPath
-						int[] lattitude = new int[latt.size()];    
-						Iterator<Double> iterator = latt.iterator(); 
-						for (int i = 0; i < lattitude.length; i++) {
+	public static String generateMap() throws XMLStreamException, IOException {
+		String file = "";
 
-							lattitude[i] = iterator.next().intValue();
-						}
-						
-						
-						// Transform arralist to array to be able to create generalPath	
-						int[] longitude = new int[longi.size()];
-						Iterator<Double> iteratorLongi = longi.iterator();
-						for (int i = 0; i < longitude.length; i++) {
+		JALDocument document = new JALDocument("/home/mahff/Téléchargements/singapore (1).jal");
+		// file += "<svg width=\"800\"
+		// height=\"800\"xmlns=\"http://www.w3.org/2000/svg\">\n";
+		file +="<svg style=\"background-color: #D4EFEF\" xmlns=\"http://www.w3.org/2000/svg\">\n";
 
-							longitude[i] = iteratorLongi.next().intValue();
+		for (String island : document.getElementsDataByType("island")) {
+			file +="\t<polygon style=\"fill: #eee; stroke: none; stroke-width: 0.1\" points=\"";
+			for (String data : island.split("::")) {
+				if (data.startsWith("subnode=")) {
+					// file +=
+					// Double.parseDouble(data.split(",")[1])*100+","+Double.parseDouble(data.split(",")[2])*100+"
+					// ";
+					file +=Double.parseDouble(data.split(",")[2]) * 5000 + ","
+							+ Double.parseDouble(data.split(",")[1]) * 5000 + " ";
+				}
+			}
+			// file += "\" />\n";
+			file +="\" />\n";
+		}
 
-						}
-						
-						shape = create(longitude, lattitude);
-
+		for (String area : document.getElementsDataByType("area")) {
+			if (area.indexOf("building=default") != -1) {
+				file +="\t<polygon style=\"fill: #999; stroke: none; stroke-width: 0.1\" points=\"";
+				for (String data : area.split("::")) {
+					if (data.startsWith("subnode=")) {
+						// file +=
+						// Double.parseDouble(data.split(",")[1])*100+","+Double.parseDouble(data.split(",")[2])*100+"
+						// ";
+						file +=Double.parseDouble(data.split(",")[2]) * 5000 + ","
+								+ Double.parseDouble(data.split(",")[1]) * 5000 + " ";
 					}
 				}
-
+				// file += "\" />\n";
+				file +="\" />\n";
 			}
-		} catch (FileNotFoundException | XMLStreamException e) {
-			System.out.println(e);
+			if (area.indexOf("building=hospital") != -1) {
+				file +="\t<polygon style=\"fill: #995252; stroke: none; stroke-width: 0.1\" points=\"";
+				for (String data : area.split("::")) {
+					if (data.startsWith("subnode=")) {
+						// file +=
+						// Double.parseDouble(data.split(",")[1])*100+","+Double.parseDouble(data.split(",")[2])*100+"
+						// ";
+						file +=Double.parseDouble(data.split(",")[2]) * 5000 + ","
+								+ Double.parseDouble(data.split(",")[1]) * 5000 + " ";
+					}
+				}
+				// file += "\" />\n";
+				file +="\" />\n";
+			}
+			if (area.indexOf("building=commercial") != -1) {
+				file +="\t<polygon style=\"fill: #529952; stroke: none; stroke-width: 0.1\" points=\"";
+				for (String data : area.split("::")) {
+					if (data.startsWith("subnode=")) {
+						// file +=
+						// Double.parseDouble(data.split(",")[1])*100+","+Double.parseDouble(data.split(",")[2])*100+"
+						// ";
+						file +=Double.parseDouble(data.split(",")[2]) * 5000 + ","
+								+ Double.parseDouble(data.split(",")[1]) * 5000 + " ";
+					}
+				}
+				// file += "\" />\n";
+				file +="\" />\n";
+			}
+			if (area.indexOf("building=hotel") != -1) {
+				file +="\t<polygon style=\"fill: #525299; stroke: none; stroke-width: 0.1\" points=\"";
+				for (String data : area.split("::")) {
+					if (data.startsWith("subnode=")) {
+						// file +=
+						// Double.parseDouble(data.split(",")[1])*100+","+Double.parseDouble(data.split(",")[2])*100+"
+						// ";
+						file +=Double.parseDouble(data.split(",")[2]) * 5000 + ","
+								+ Double.parseDouble(data.split(",")[1]) * 5000 + " ";
+					}
+				}
+				// file += "\" />\n";
+				file +="\" />\n";
+			}
+			if (area.indexOf("landuse") != -1) {
+				file +="\t<polygon style=\"fill: #ffcccc; stroke: none; stroke-width: 0.1\" points=\"";
+				for (String data : area.split("::")) {
+					if (data.startsWith("subnode=")) {
+						// file +=
+						// Double.parseDouble(data.split(",")[1])*100+","+Double.parseDouble(data.split(",")[2])*100+"
+						// ";
+						file +=Double.parseDouble(data.split(",")[2]) * 5000 + ","
+								+ Double.parseDouble(data.split(",")[1]) * 5000 + " ";
+					}
+				}
+				// file += "\" />\n";
+				file +="\" />\n";
+			}
 		}
 
-	}
+		for (String way : document.getElementsDataByType("way")) {
+			// file += "\t<polyline fill=\"none\" stroke=\"black\" points=\"";
+			if (way.indexOf("road=motorway") != -1) {
+				file +="\t<polyline style=\"fill: none; stroke: #009405; stroke-width: 1\" points=\"";
+				for (String data : way.split("::")) {
+					if (data.startsWith("subnode=")) {
+						// file +=
+						// Double.parseDouble(data.split(",")[1])*100+","+Double.parseDouble(data.split(",")[2])*100+"
+						// ";
+						file +=Double.parseDouble(data.split(",")[2]) * 5000 + ","
+								+ Double.parseDouble(data.split(",")[1]) * 5000 + " ";
+					}
+				}
+				// file += "\" />\n";
+				file +="\" />\n";
+			}
+			if (way.indexOf("road=primary") != -1) {
+				file +="\t<polyline style=\"fill: none; stroke: #00C49A; stroke-width: 0.8\" points=\"";
+				for (String data : way.split("::")) {
+					if (data.startsWith("subnode=")) {
+						// file +=
+						// Double.parseDouble(data.split(",")[1])*100+","+Double.parseDouble(data.split(",")[2])*100+"
+						// ";
+						file +=Double.parseDouble(data.split(",")[2]) * 5000 + ","
+								+ Double.parseDouble(data.split(",")[1]) * 5000 + " ";
+					}
+				}
+				// file += "\" />\n";
+				file +="\" />\n";
+			}
+			if (way.indexOf("road=secondary") != -1) {
+				file +="\t<polyline style=\"fill: none; stroke: #00DEDE; stroke-width: 0.7\" points=\"";
+				for (String data : way.split("::")) {
+					if (data.startsWith("subnode=")) {
+						// file +=
+						// Double.parseDouble(data.split(",")[1])*100+","+Double.parseDouble(data.split(",")[2])*100+"
+						// ";
+						file +=Double.parseDouble(data.split(",")[2]) * 5000 + ","
+								+ Double.parseDouble(data.split(",")[1]) * 5000 + " ";
+					}
+				}
+				// file += "\" />\n";
+				file +="\" />\n";
+			}
+			if (way.indexOf("road=tertiary") != -1) {
+				file += "\t<polyline style=\"fill: none; stroke: #9E0052; stroke-width: 0.4\" points=\"";
+				for (String data : way.split("::")) {
+					if (data.startsWith("subnode=")) {
+						// file +=
+						// Double.parseDouble(data.split(",")[1])*100+","+Double.parseDouble(data.split(",")[2])*100+"
+						// ";
 
-	protected Shape create(int[] longitude, int[] lattitude) {
-		GeneralPath path = new GeneralPath(GeneralPath.WIND_EVEN_ODD, longitude.length);
-		
-		path.moveTo(longitude[0], lattitude[0]); //Starting point 
-		for (int i = 1; i < longitude.length; i++) {
-			path.lineTo(longitude[i], lattitude[i]);
+						if (data.length() == 3)
+							file += Double.parseDouble(data.split(",")[2]) * 5000 + ","
+									+ Double.parseDouble(data.split(",")[1]) * 5000 + " ";
+					}
+				}
+				// file += "\" />\n";
+				file += "\" />\n";
+			}
 		}
-		
-		return path;
+
+		// file += "</svg>";
+		file +="</svg>";
+		return file;
 	}
 
-	public void paint(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-
-		g2.setPaint(Color.black);
-		g2.draw(shape);
-	}
-
-	public static void main(String[] args) {
-		JFrame jf = new JFrame("Demo");
-		ShapeWays tl = new ShapeWays();
-		jf.add(tl);
-		jf.setSize(1200, 1200);
-		jf.setVisible(true);
-
-	}
 
 }
