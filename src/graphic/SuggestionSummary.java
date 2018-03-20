@@ -4,16 +4,24 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
+import javax.xml.stream.XMLStreamException;
 
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.JSVGScrollPane;
+import org.apache.batik.util.XMLResourceDescriptor;
+import org.w3c.dom.svg.SVGDocument;
+
+import parsing.ShapeWays;
 
 public class SuggestionSummary {
 
@@ -24,7 +32,18 @@ public class SuggestionSummary {
 	public static Component SuggestionSummaryFrame() {
 
 		final JSVGCanvas image = new JSVGCanvas();
-		image.setURI(new File("SVG_logo.svg").toURI().toString());
+		String parser = XMLResourceDescriptor.getXMLParserClassName();
+		SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
+		SVGDocument document;
+		try {
+			document = factory.createSVGDocument("", new ByteArrayInputStream(ShapeWays.generateMap().getBytes("UTF-8")));
+			image.setSVGDocument(document);
+		} catch (IOException | XMLStreamException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
 
 		JSVGScrollPane map = new JSVGScrollPane(image);
 
