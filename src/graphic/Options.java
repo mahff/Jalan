@@ -62,13 +62,10 @@ public class Options {
 					vehicle += "Bus ";
 					setSearchinfo(getSearchinfo() + "bus,");
 				}
-				SuggestionSummary.summary.setText("<html> Departure : "
-						+ SearchArea.departureField.getText() + "<br/> "
-						+ "Arrival :" + SearchArea.arrivalField.getText()
-						+ "<br/> " + "By : " + vehicle + "<br/> "
-						+ model1.getValue() + "<br/> " + "</html>");
-				setSearchinfo(getSearchinfo()
-						+ SearchArea.departureField.getText() + ","
+				SuggestionSummary.summary.setText("<html> Departure : " + SearchArea.departureField.getText()
+						+ "<br/> <br/> " + "Arrival :" + SearchArea.arrivalField.getText() + "<br/> <br/> " + "By : "
+						+ vehicle + "<br/> <br/>  " + model1.getValue() + "<br/> <br/> " + "</html>");
+				setSearchinfo(getSearchinfo() + SearchArea.departureField.getText() + ","
 						+ SearchArea.arrivalField.getText() + ",");
 
 			}
