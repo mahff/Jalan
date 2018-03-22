@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -15,11 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JSplitPane;
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.JSVGScrollPane;
-import org.apache.batik.util.XMLResourceDescriptor;
-import org.w3c.dom.svg.SVGDocument;
 
 import parsing.ShapeWays;
 
@@ -28,28 +24,21 @@ public class SuggestionSummary {
 	static JSVGCanvas image = new JSVGCanvas();
 	static JComboBox<String> suggestion = new JComboBox<String>();
 	static JLabel summary = new JLabel();
+	static int zoomlevel = 3;
 
 	public static Component SuggestionSummaryFrame() {
 
-		final JSVGCanvas image = new JSVGCanvas();
-		String parser = XMLResourceDescriptor.getXMLParserClassName();
-		SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
-		SVGDocument document;
 		try {
-			document = factory.createSVGDocument("", new ByteArrayInputStream(ShapeWays.generateMap().getBytes("UTF-8")));
-			image.setSVGDocument(document);
-		} catch (IOException | XMLStreamException e) {
-			// TODO Auto-generated catch block
+			ShapeWays.generateMap();
+		} catch (XMLStreamException | IOException e) {
 			e.printStackTrace();
 		}
 
-		
+		final JSVGCanvas image = new JSVGCanvas();
+		image.setURI(new File("singapore.svg").toURI().toString());
 
 		JSVGScrollPane map = new JSVGScrollPane(image);
-
 		image.addMouseWheelListener(new MouseWheelListener() {
-
-			int zoomlevel = 3;
 
 			public void mouseWheelMoved(MouseWheelEvent evt) {
 
@@ -66,10 +55,10 @@ public class SuggestionSummary {
 						action = map.get(JSVGCanvas.ZOOM_IN_ACTION);
 					}
 					action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
-				} else if (zoomlevel <= 0){
-					zoomlevel = 1;
+				} else if (zoomlevel <= 0) {
+					setZoomlevel(1);
 				} else {
-					zoomlevel = 3;
+					setZoomlevel(3);
 				}
 			}
 		});
@@ -83,9 +72,17 @@ public class SuggestionSummary {
 
 		JSplitPane sumSug = new JSplitPane(JSplitPane.VERTICAL_SPLIT, suggestion, summary);
 		JSplitPane splitMap = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sumSug, map);
-		splitMap.setDividerLocation(300);
+		splitMap.setDividerLocation(250);
 		sumSug.setDividerLocation(35);
 		return splitMap;
+	}
+
+	public static int getZoomlevel() {
+		return zoomlevel;
+	}
+
+	public static void setZoomlevel(int zoomlevel) {
+		SuggestionSummary.zoomlevel = zoomlevel;
 	}
 
 }
