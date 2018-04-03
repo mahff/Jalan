@@ -56,7 +56,7 @@ public class SuggestionSummary {
 				int deltaX = origin.x - e.getX();
 				int deltaY = origin.y - e.getY();
 				image.setEnableImageZoomInteractor(true);
-				at.translate(deltaX, deltaY);
+				at.translate(-deltaX, -deltaY);
 				image.setRenderingTransform(at, true);
 				System.out.println(deltaX);
 				System.out.println(deltaY);
