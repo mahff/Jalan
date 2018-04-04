@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.xml.stream.XMLStreamException;
 
-import graphic.SuggestionSummary;
 import parsing.JALDocument;
 
 public class SecondZoomLevel extends JPanel implements ShapeMap {
@@ -16,7 +15,7 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	double zoomlevel = SuggestionSummary.getZoomlevel();
+	
 
 	public SecondZoomLevel() {
 
@@ -38,9 +37,9 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 					- Double.parseDouble(meta.get(1).split("::")[4].substring(7));
 			writer.write("<svg style=\"background-color: #D4EFEF\" xmlns=\"http://www.w3.org/2000/svg\" width=\""
 					+ maxLon * 2000 + "\" height=\"" + maxLat * 2000 + "\">\n");
-			shapeArea(document, maxLon, maxLat, writer, zoomlevel);
-			shapeWays(document, maxLon, maxLat, writer, zoomlevel);
-			shapeIsland(document, maxLon, maxLat, writer, zoomlevel);
+			shapeArea(document, maxLon, maxLat, writer);
+			shapeWays(document, maxLon, maxLat, writer);
+			shapeIsland(document, maxLon, maxLat, writer);
 			writer.write("</svg>");
 			writer.close();
 		} catch (XMLStreamException | IOException e) {
@@ -50,7 +49,7 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 
 	}
 
-	public void shapeArea(JALDocument document, double maxLon, double maxLat, BufferedWriter writer, double zoomLevel) {
+	public void shapeArea(JALDocument document, double maxLon, double maxLat, BufferedWriter writer) {
 
 		try {
 			for (String area : document.getElementsDataByType("area")) {
@@ -119,7 +118,7 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 
 	}
 
-	public void shapeWays(JALDocument document, double maxLon, double maxLat, BufferedWriter writer, double zoomLevel) {
+	public void shapeWays(JALDocument document, double maxLon, double maxLat, BufferedWriter writer) {
 		try {
 			for (String way : document.getElementsDataByType("way")) {
 				if (way.indexOf("road=motorway") != -1) {
@@ -178,8 +177,7 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 
 	}
 
-	public void shapeIsland(JALDocument document, double maxLon, double maxLat, BufferedWriter writer,
-			double zoomLevel) {
+	public void shapeIsland(JALDocument document, double maxLon, double maxLat, BufferedWriter writer) {
 		try {
 			for (String island : document.getElementsDataByType("island")) {
 				writer.write(
