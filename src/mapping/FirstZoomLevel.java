@@ -4,20 +4,23 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import javax.swing.JPanel;
 import javax.xml.stream.XMLStreamException;
 
+import graphic.SuggestionSummary;
 import parsing.JALDocument;
 
-public class SecondZoomLevel extends JPanel implements ShapeMap {
+public class FirstZoomLevel extends JPanel implements ShapeMap {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
 
-	public SecondZoomLevel() {
+	public FirstZoomLevel() {
 
 		generateMap();
 
@@ -35,11 +38,14 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 					- Double.parseDouble(meta.get(1).split("::")[3].substring(7));
 			double maxLat = Double.parseDouble(meta.get(1).split("::")[2].substring(7))
 					- Double.parseDouble(meta.get(1).split("::")[4].substring(7));
-			writer.write("<svg style=\"background-color: #D4EFEF\" xmlns=\"http://www.w3.org/2000/svg\" width=\""
-					+ maxLon * 2000 + "\" height=\"" + maxLat * 2000 + "\">\n");
+			writer.write(
+					"<svg style=\"background-color: #D4EFEF\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink= \"http://www.w3.org/1999/xlink\" width=\""
+							+ maxLon * 2000 + "\" height=\"" + maxLat * 2000 + "\">\n");
 			shapeArea(document, maxLon, maxLat, writer);
 			shapeWays(document, maxLon, maxLat, writer);
 			shapeIsland(document, maxLon, maxLat, writer);
+			writer.write("<text x=\"325\" y=\"225\"\r\n" + "      style=\"fill: RED; stroke: none; font-size: 48;\">\n"
+					+ "    SINGAPORE\n" + "</text>");
 			writer.write("</svg>");
 			writer.close();
 		} catch (XMLStreamException | IOException e) {
@@ -67,7 +73,8 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 					writer.write("\" />\n");
 				}
 				if (area.indexOf("building=hospital") != -1) {
-					writer.write("\t<polygon style=\"fill: #995252; stroke: none; stroke-width: 0.1\"  points=\"");
+					writer.write(
+							"\t<polygon display =\"none\" style=\"fill: #995252; stroke: none; stroke-width: 0.1\"  points=\"");
 					for (String data : area.split("::")) {
 						if (data.startsWith("subnode=")) {
 							writer.write(Double.parseDouble(data.split(",")[2]) * 2000 + ","
@@ -78,7 +85,7 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 				}
 				if (area.indexOf("building=commercial") != -1) {
 					writer.write(
-							"\t<polygon style=\"fill: #529952; stroke: none; stroke-width: 0.1\"  points=\"");
+							"\t<polygon display =\"none\" style=\"fill: #529952; stroke: none; stroke-width: 0.1\"  points=\"");
 					for (String data : area.split("::")) {
 						if (data.startsWith("subnode=")) {
 
@@ -90,7 +97,7 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 				}
 				if (area.indexOf("building=hotel") != -1) {
 					writer.write(
-							"\t<polygon  style=\"fill: #525299; stroke: none; stroke-width: 0.1\"  points=\"");
+							"\t<polygon display =\"none\"  style=\"fill: #525299; stroke: none; stroke-width: 0.1\"  points=\"");
 					for (String data : area.split("::")) {
 						if (data.startsWith("subnode=")) {
 							writer.write(Double.parseDouble(data.split(",")[2]) * 2000 + ","
@@ -100,8 +107,7 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 					writer.write("\" />\n");
 				}
 				if (area.indexOf("landuse") != -1) {
-					writer.write(
-							"\t<polygon style=\"fill: #ffcccc; stroke: none; stroke-width: 0.1\"  points=\"");
+					writer.write("\t<polygon style=\"fill: #ffcccc; stroke: none; stroke-width: 0.1\"  points=\"");
 					for (String data : area.split("::")) {
 						if (data.startsWith("subnode=")) {
 							writer.write(Double.parseDouble(data.split(",")[2]) * 2000 + ","
@@ -134,8 +140,7 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 				}
 
 				if (way.indexOf("road=primary") != -1) {
-					writer.write(
-							"\t<polyline style=\"fill: none; stroke: #00C49A; stroke-width: 0.8\"  points=\"");
+					writer.write("\t<polyline style=\"fill: none; stroke: #00C49A; stroke-width: 0.8\"  points=\"");
 					for (String data : way.split("::")) {
 						if (data.startsWith("subnode=")) {
 							writer.write(Double.parseDouble(data.split(",")[2]) * 2000 + ","
@@ -146,7 +151,7 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 				}
 				if (way.indexOf("road=secondary") != -1) {
 					writer.write(
-							"\t<polyline style=\"fill: none; stroke: #00DEDE; stroke-width: 0.7\"  points=\"");
+							"\t<polyline display =\"none\"  style=\"fill: none; stroke: #00DEDE; stroke-width: 0.7\"  points=\"");
 					for (String data : way.split("::")) {
 						if (data.startsWith("subnode=")) {
 							writer.write(Double.parseDouble(data.split(",")[2]) * 2000 + ","
@@ -157,7 +162,7 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 				}
 				if (way.indexOf("road=tertiary") != -1) {
 					writer.write(
-							"\t<polyline display =\"none\" style=\"fill: none; stroke: #9E0052; stroke-width: 0.4\"  points=\"");
+							"\t<polyline display =\"none\"  style=\"fill: none; stroke: #9E0052; stroke-width: 0.4\"  points=\"");
 					for (String data : way.split("::")) {
 						if (data.startsWith("subnode=")) {
 
@@ -177,11 +182,11 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 
 	}
 
+	@Override
 	public void shapeIsland(JALDocument document, double maxLon, double maxLat, BufferedWriter writer) {
 		try {
 			for (String island : document.getElementsDataByType("island")) {
-				writer.write(
-						"\t<polygon style=\"fill: #eee; stroke: none; stroke-width: 0.1\"  points=\"");
+				writer.write("\t<polygon style=\"fill: #eee; stroke: none; stroke-width: 0.1\"  points=\"");
 				for (String data : island.split("::")) {
 					if (data.startsWith("subnode=")) {
 
@@ -196,6 +201,5 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 }
