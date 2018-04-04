@@ -16,7 +16,6 @@ public class ThirdZoomLevel extends JPanel implements ShapeMap {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	double zoomLevel = SuggestionSummary.getZoomlevel(); 
 
 	public ThirdZoomLevel() {
 
@@ -38,9 +37,9 @@ public class ThirdZoomLevel extends JPanel implements ShapeMap {
 					- Double.parseDouble(meta.get(1).split("::")[4].substring(7));
 			writer.write("<svg style=\"background-color: #D4EFEF\" xmlns=\"http://www.w3.org/2000/svg\" width=\""
 					+ maxLon * 2000 + "\" height=\"" + maxLat * 2000 + "\">\n");
-			shapeArea(document, maxLon, maxLat, writer, zoomLevel);
-			shapeWays(document, maxLon, maxLat, writer, zoomLevel);
-			shapeIsland(document, maxLon, maxLat, writer, zoomLevel);
+			shapeArea(document, maxLon, maxLat, writer);
+			shapeWays(document, maxLon, maxLat, writer);
+			shapeIsland(document, maxLon, maxLat, writer);
 
 			writer.write("</svg>");
 			writer.close();
@@ -51,7 +50,7 @@ public class ThirdZoomLevel extends JPanel implements ShapeMap {
 
 	}
 
-	public void shapeArea(JALDocument document, double maxLon, double maxLat, BufferedWriter writer, double zoomLevel) {
+	public void shapeArea(JALDocument document, double maxLon, double maxLat, BufferedWriter writer) {
 
 		try {
 			for (String area : document.getElementsDataByType("area")) {
@@ -121,7 +120,7 @@ public class ThirdZoomLevel extends JPanel implements ShapeMap {
 
 	}
 
-	public void shapeWays(JALDocument document, double maxLon, double maxLat, BufferedWriter writer, double zoomLevel) {
+	public void shapeWays(JALDocument document, double maxLon, double maxLat, BufferedWriter writer) {
 		try {
 			for (String way : document.getElementsDataByType("way")) {
 				if (way.indexOf("road=motorway") != -1) {
@@ -160,7 +159,7 @@ public class ThirdZoomLevel extends JPanel implements ShapeMap {
 				}
 				if (way.indexOf("road=tertiary") != -1) {
 					writer.write(
-							"\t<polyline   style=\"fill: none; stroke: #9E0052; stroke-width: 0.4\" points=\"");
+							"\t<polyline style=\"fill: none; stroke: #9E0052; stroke-width: 0.4\" points=\"");
 					for (String data : way.split("::")) {
 						if (data.startsWith("subnode=")) {
 
@@ -180,7 +179,7 @@ public class ThirdZoomLevel extends JPanel implements ShapeMap {
 
 	}
 
-	public void shapeIsland(JALDocument document, double maxLon, double maxLat, BufferedWriter writer, double zoomLevel) {
+	public void shapeIsland(JALDocument document, double maxLon, double maxLat, BufferedWriter writer) {
 		try {
 			for (String island : document.getElementsDataByType("island")) {
 				writer.write(
