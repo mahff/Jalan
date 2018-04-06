@@ -1,9 +1,10 @@
 package route;
 
-public class WalkRoute extends PersonnalRoute {
+public class WalkRoute extends PersonalRoute{
 
-	public Walking() {
-		super();
+	private String type = "walk";
+	
+	public WalkRoute(){
+		super(5);
 	}
-
 }

@@ -1,10 +1,8 @@
 package route;
 
-public class RoadRoute extends PersonnalRoute {
+public class RoadRoute extends PersonalRoute {
 
-	public RoadRoute() {
-		super();
+	public RoadRoute(int speed) {
+		super(speed);
 	}
-	
-
 }
