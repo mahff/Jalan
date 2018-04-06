@@ -4,6 +4,12 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -14,14 +20,18 @@ import javax.swing.SpinnerModel;
 
 import org.apache.batik.swing.JSVGCanvas;
 
-import mapping.FirstZoomLevel;
+import mapping.MapShapping;
+import route.Route;
+import threading.PathFinder;
+import threading.QueueHandler;
+
 
 public class Options {
 	public static JButton okButton = new JButton(" Search ");
 	static JSVGCanvas image = new JSVGCanvas(); 
-	public static Component OptionArea() {
-		new FirstZoomLevel(); 
-		image.setURI(new File("singapore.svg").toURI().toString());
+	public static Component OptionArea(){
+		new MapShapping("first"); 
+		image.setURI(new File("data/svg/singapore.svg").toURI().toString());
 		image.setAutoscrolls(true);
 		
 		Box topBox = Box.createHorizontalBox();
@@ -70,14 +80,29 @@ public class Options {
 					vehicle += "Bus ";
 					setSearchinfo(getSearchinfo() + "bus,");
 				}
-				SuggestionSummary.summary.setText("<html> Departure : " + SearchArea.departureField.getText()
-						+ "<br/> <br/> " + "Arrival :" + SearchArea.arrivalField.getText() + "<br/> <br/> " + "By : "
+				SuggestionSummary.summary.setText("<html> Departure : " + SearchArea.departure.getText()
+						+ "<br/> <br/> " + "Arrival :" + SearchArea.arrival.getText() + "<br/> <br/> " + "By : "
 						+ vehicle + "<br/> <br/>  " + model1.getValue() + "<br/> <br/> " + "</html>");
-				setSearchinfo(getSearchinfo() + SearchArea.departureField.getText() + ","
-						+ SearchArea.arrivalField.getText() + ",");
-				new FirstZoomLevel(); 
-				image.setURI(new File("singapore.svg").toURI().toString());
+				setSearchinfo(getSearchinfo() + SearchArea.departure.getText() + ","
+						+ SearchArea.arrival.getText() + ",");
+				new MapShapping(MapShapping.getZoomLevel()); 
+				image.setURI(new File("data/svg/singapore.svg").toURI().toString());
 				image.setAutoscrolls(true);
+				
+		    	//ThreadEventListener threadingListener = new ThreadEventListener();
+		    	/*PathFinder finder = new PathFinder();
+		    	//finder.registerThreadEventListener(threadingListener);
+		    	finder.run();
+		    	try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+		    	ArrayList<Route> route = QueueHandler.dequeue();
+		    	if(route!=null) System.out.println(route.get(1).getNodes().get(1));
+				 //ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+				 //final ScheduledFuture<?> senderHandle = scheduler.scheduleAtFixedRate(finder.getInstance(), 1000, 500, TimeUnit.MILLISECONDS);*/
 			}
 
 			public String getSearchinfo() {
