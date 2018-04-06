@@ -11,63 +11,49 @@ import java.util.regex.Pattern;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 import parsing.CSVDocument;
 
 public class SearchArea {
 
-	private static JComboBox<String> departureField = new JComboBox<String>();
-	private static JComboBox<String> arrivalField = new JComboBox<String>();
+	public static JComboBox<String> departureField = new JComboBox<String>();
+	public static JTextField departure = new JTextField(); 
+	public static JTextField arrival = new JTextField();
+	public static JComboBox<String> arrivalField = new JComboBox<String>();
 	private static CSVDocument document;
 
 
 	public SearchArea() throws IOException {
 		departureField.setEditable(true);
 		arrivalField.setEditable(true);
-		document = new CSVDocument("singapore.sug");
+		document = new CSVDocument("data/indexation/singapore.sug");
 
 	}
 
 	public static Component SearchFrame() {
+		departureField = new JComboBox<String>();
+		departureField.setEditable(true);
+		departureField.setSelectedIndex(-1);
+        JTextField departure = (JTextField) departureField.getEditor().getEditorComponent();
+        departure.setText("");
+        //departure.addKeyListener(new ComboKeyHandler(departureField));
+        
+        arrivalField = new JComboBox<String>();
+        arrivalField.setEditable(true);
+        arrivalField.setSelectedIndex(-1);
+        JTextField arrival = (JTextField) arrivalField.getEditor().getEditorComponent();
+        arrival.setText("");
+        //arrival.addKeyListener(new ComboKeyHandler(arrivalField));
+        
 		Container pane = new Container();
 		pane.setLayout(new GridLayout(0, 1));
-		JLabel departure = new JLabel("Departure : ");
-		JLabel arrival = new JLabel("Arrival : ");
+		JLabel departureLabel = new JLabel("Departure : ");
+		JLabel arrivalLabel = new JLabel("Arrival : ");
 		
-		ActionListener suggestionDeparture = new ActionListener() {
-			Pattern pattern = Pattern.compile((String) departureField.getEditor().getItem());
-			
-			public void actionPerformed(ActionEvent e) {
-				for (String key : document.getNodes().keySet()) {
-					Matcher matcher = pattern.matcher(key);
-					if (matcher.matches() == true) {
-						departureField.addItem(key);
-					}
-			
-			
-				}
-			}
-		};
-		ActionListener suggestionArrival = new ActionListener() {
-			Pattern pattern = Pattern.compile((String) arrivalField.getEditor().getItem());
-			
-			public void actionPerformed(ActionEvent e) {
-				for (String key : document.getNodes().keySet()) {
-					Matcher matcher = pattern.matcher(key);
-					if (matcher.matches() == true) {
-						departureField.addItem(key);
-					}
-			
-			
-				}
-			}
-		};
-		
-		departureField.addActionListener(suggestionDeparture);
-		arrivalField.addActionListener(suggestionArrival);
-		pane.add(departure);
+		pane.add(departureLabel);
 		pane.add(departureField);
-		pane.add(arrival);
+		pane.add(arrivalLabel);
 		pane.add(arrivalField);
 
 		return pane;

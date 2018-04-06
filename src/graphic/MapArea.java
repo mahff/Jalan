@@ -18,7 +18,7 @@ public class MapArea {
 	public static Component MapFrame() {
 		
 		image = Options.returnImage();
-		image.setURI(new File("singapore.svg").toURI().toString());
+		image.setURI(new File("data/svg/singapore.svg").toURI().toString());
 		image.setAutoscrolls(true);
 		DragAndZoom();
 		
