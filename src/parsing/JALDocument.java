@@ -185,6 +185,23 @@ public class JALDocument {
 		return result;
 	}
 	
+	public HashMap<String,String> getMappedSubnodes() throws FileNotFoundException, XMLStreamException{
+		HashMap<String,String> result = new HashMap<String,String>();
+		ArrayList<String> subnodeContainers = getElementsDataByType("way");
+		subnodeContainers.addAll(getElementsDataByType("area"));
+		for(String subnodeContainer : subnodeContainers){
+			for(String data : subnodeContainer.split("::")){
+				if(data.startsWith("subnode=")){
+					if(data.indexOf(",")!=-1){
+						if(!result.containsKey(data.substring(8,data.indexOf(","))))
+							result.put(data.substring(8,data.indexOf(",")), new SubnodeInfo(subnodeContainer,data.substring(8,data.indexOf(","))).toString());
+						else result.put(data.substring(8,data.indexOf(",")),result.get(data.substring(8,data.indexOf(",")))+(new SubnodeInfo(subnodeContainer,data.substring(8,data.indexOf(",")))).toString());
+					}
+				}
+			}
+		}
+		return result;
+	}
 	
 	
 	public ArrayList<String> getAdjacentElements(String id, String wayId) throws XMLStreamException, FileNotFoundException{

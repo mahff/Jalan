@@ -13,7 +13,7 @@ public class SearchSuggestionParse {
 	public static void readSug() {
 
 		try {
-			BufferedReader in = new BufferedReader(new FileReader("singapore.sug"));
+			BufferedReader in = new BufferedReader(new FileReader("data/indexation/singapore.sug"));
 			String str;
 			while ((str = in.readLine()) != null) {
 				data.add(str);

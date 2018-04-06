@@ -23,8 +23,11 @@ public class JALRules {
 			//bounds of the map
 			if(component.startsWith("<")){
 				node.rename("meta");
-				node.addChild(new Node("<minlat>"+component.substring(1,component.indexOf("#"))+"</minlat>"));
-				node.addChild(new Node("<minlon>"+component.substring(component.indexOf("#")+1,component.length()-1)+"</minlon>"));
+				String[] coordinates = component.substring(1,component.length()-1).split("#");
+				node.addChild(new Node("<minlat>"+coordinates[0]+"</minlat>"));
+				node.addChild(new Node("<minlon>"+coordinates[1]+"</minlon>"));
+				node.addChild(new Node("<maxlat>"+coordinates[2]+"</maxlat>"));
+				node.addChild(new Node("<maxlon>"+coordinates[3]+"</maxlon>"));
 			}
 			
 			//Types of jal Nodes
@@ -32,7 +35,7 @@ public class JALRules {
 				node.rename("way");
 			if(component.equals("relation"))
 				node.rename("relation");
-			if(component.equals("area=yes")||component.equals("natural=water"))
+			if((component.equals("area=yes")||component.equals("natural=water"))||(component.startsWith("building=")||component.startsWith("landuse=")))
 				node.rename("area");
 			if(component.equals("type=route"))
 				node.rename("route");
@@ -40,6 +43,7 @@ public class JALRules {
 				node.rename("coast");
 			if(component.equals("place=island"))
 				node.rename("island");
+			
 			
 			//Attributes
 			if(component.startsWith("id=")){
@@ -267,7 +271,11 @@ public class JALRules {
 			}
 			if(component.startsWith("[subnode=")){
 				String 	content[] = component.substring(9,component.length()-1).split(",");
-				node.addChild(new Node("<subway role=\""+content[1]+"\">"+content[0]+"</subway>"));
+				if(content.length==2)
+					node.addChild(new Node("<subway role=\""+content[1]+"\">"+content[0]+"</subway>"));
+				else{
+					node.addChild(new Node("<subway>"+content[0]+"</subway>"));
+				}
 			}
 			
 			//Child using regex -> Address elements
@@ -281,27 +289,14 @@ public class JALRules {
 					else node.setContent(matcher.group(1));
 				}
 			}
-			
 		}
+		
+		//Correcting bad naming...
+		if(data.indexOf("building=")!=-1&&data.indexOf("lon=")!=-1)
+			node.rename("node");
+		
+		if(node.getName().equals("relation"))
+			return new Node("");
 		return node;
-	}
-	
-	public String catchGhostAreas(String data){
-		boolean firstSubnodeFound = false;
-		String firstSubnodeId = "foo", currentSubnodeId = "goo";
-		String[] components = data.split("::");
-		for(String component : components){
-			if(component.startsWith("(subnode=")) {
-				if(firstSubnodeFound==false){
-					firstSubnodeFound = true;
-					firstSubnodeId = component.substring(9, component.length()-1);
-				}
-				currentSubnodeId = component.substring(9, component.length()-1);
-			}
-		}
-		if(currentSubnodeId==firstSubnodeId){
-			return data+"::area=yes";
-		}
-		return data;
 	}
 }
