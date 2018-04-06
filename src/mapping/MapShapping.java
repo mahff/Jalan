@@ -26,8 +26,8 @@ public class MapShapping extends JPanel {
 		
 		try {
 			
-			writer = new BufferedWriter(new FileWriter("singapore.svg"));
-			document = new JALDocument("singapore.jal");
+			writer = new BufferedWriter(new FileWriter("data/svg/singapore.svg"));
+			document = new JALDocument("data/maps/singapore.jal");
 			meta = document.getElementsDataByType("meta");
 			maxLon = Double.parseDouble(meta.get(1).split("::")[1].substring(7))
 					- Double.parseDouble(meta.get(1).split("::")[3].substring(7));
