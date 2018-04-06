@@ -14,6 +14,7 @@ public class MapShapping extends JPanel {
 	/**
 	 * 
 	 */
+	static String zoomLevel = ""; 
 	private static final long serialVersionUID = 1L;
 	BufferedWriter writer;
 	JALDocument document;
@@ -21,17 +22,11 @@ public class MapShapping extends JPanel {
 	double maxLon;
 	double maxLat;
 
-	public MapShapping(String zoomLevel) {
-
-		generateMap(zoomLevel);
-
-	}
-
-	public void generateMap(String zoomLevel) {
-
+	public MapShapping(String zoom) {
+		
 		try {
+			
 			writer = new BufferedWriter(new FileWriter("singapore.svg"));
-
 			document = new JALDocument("singapore.jal");
 			meta = document.getElementsDataByType("meta");
 			maxLon = Double.parseDouble(meta.get(1).split("::")[1].substring(7))
@@ -41,38 +36,41 @@ public class MapShapping extends JPanel {
 			writer.write(
 					"<svg style=\"background-color: #D4EFEF\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink= \"http://www.w3.org/1999/xlink\" width=\""
 							+ maxLon * 2000 + "\" height=\"" + maxLat * 2000 + "\">\n");
-			if (zoomLevel == "first") {
+			
+			if (zoom == "first") {
 				shapeArea("display = \"none\"" ,"display = \"none\"" );
 				shapeWays("display = \"none\"", "display = \"none\"");
+				writer.write("<text x=\"325\" y=\"225\"\r\n" + "style=\"fill: RED; stroke: none; font-size: 48;\">\n"
+						+ "    SINGAPORE\n" + "</text>");
 			}
-			if (zoomLevel == "second") {
+			if (zoom == "second") {
 				shapeArea("","display = \"none\"");
 				shapeWays("", "display = \"none\"");
 			}
-			if (zoomLevel == "third") {
+			if (zoom == "third") {
 				shapeArea("","");
 				shapeWays("","");
 			}
-
 			shapeIsland();
-			writer.write("<text x=\"325\" y=\"225\"\r\n" + "style=\"fill: RED; stroke: none; font-size: 48;\">\n"
-					+ "    SINGAPORE\n" + "</text>");
-			if (!(SearchArea.departureField.getText().isEmpty()) && !(SearchArea.arrivalField.getText().isEmpty())) {
+			if (!(SearchArea.departure.getText().isEmpty()) && !(SearchArea.arrival.getText().isEmpty())) {
 
 				writer.write("<image xlink:href=\"locale.svg\" x=\""
-						+ SearchArea.splitSearchData(SearchArea.departureField.getText(), 1) + "\" y=\""
-						+ SearchArea.splitSearchData(SearchArea.departureField.getText(), 2)
+						+ SearchArea.splitSearchData(SearchArea.departure.getText(), 1) + "\" y=\""
+						+ SearchArea.splitSearchData(SearchArea.departure.getText(), 2)
 						+ "\" height=\"50px\" width=\"50px\"/>");
 				writer.write("<image xlink:href=\"locale.svg\" x=\""
-						+ SearchArea.splitSearchData(SearchArea.arrivalField.getText(), 1) + "\" y=\""
-						+ SearchArea.splitSearchData(SearchArea.arrivalField.getText(), 2)
+						+ SearchArea.splitSearchData(SearchArea.arrival.getText(), 1) + "\" y=\""
+						+ SearchArea.splitSearchData(SearchArea.arrival.getText(), 2)
 						+ "\" height=\"50px\" width=\"50px\"/>");
 			}
+			
+			
 			writer.write("</svg>");
 			writer.close();
 		} catch (XMLStreamException | IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public void shapeArea(String zoom2, String zoom3) {
@@ -218,6 +216,10 @@ public class MapShapping extends JPanel {
 		}
 	}
 
-	
+	public static String getZoomLevel() {
+		System.out.println(zoomLevel);
+		return zoomLevel; 
+		
+	}
 
 }
