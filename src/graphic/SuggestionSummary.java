@@ -13,18 +13,18 @@ import javax.swing.JSplitPane;
 import org.apache.batik.swing.JSVGCanvas;
 
 public class SuggestionSummary {
-	static JSVGCanvas image = new JSVGCanvas();
+	//static JSVGCanvas image = new JSVGCanvas();
 
 	static JComboBox<String> suggestion = new JComboBox<String>();
 	static JLabel summary = new JLabel();
-	private static AffineTransform transformation = new AffineTransform();
+	//private static AffineTransform transformation = new AffineTransform();
 
 	public static Component SuggestionSummaryFrame() {
 		
-		image = Options.returnImage();
+		/*image = Options.returnImage();
 		image.setURI(new File("singapore.svg").toURI().toString());
 		image.setAutoscrolls(true);
-		DragAndZoom();
+		DragAndZoom();*/
 		
 		
 
@@ -33,18 +33,18 @@ public class SuggestionSummary {
 		suggestion.addItem("Touristic");
 		summary.setText("Summary");
 		summary.setText("Summary");
-		image.setToolTipText("Map");
+		//image.setToolTipText("Map");
 
 		JSplitPane sumSug = new JSplitPane(JSplitPane.VERTICAL_SPLIT, suggestion, summary);
 
-		JSplitPane splitMap = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sumSug, image);
+		JSplitPane splitMap = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sumSug, MapArea.MapFrame());
 		splitMap.setDividerLocation(250);
 		sumSug.setDividerLocation(35);
 
 		return splitMap;
 	}
 
-	public static void DragAndZoom() {
+	/*public static void DragAndZoom() {
 		MouseAdapter adapter = new MouseAdapter() {
 			double zoom = 1.0;
 			final double SCALE_STEP = 0.25d;
@@ -96,5 +96,5 @@ public class SuggestionSummary {
 		image.addMouseListener(adapter);
 		image.addMouseMotionListener(adapter);
 		image.addMouseWheelListener(adapter);
-	}
+	}*/
 }
