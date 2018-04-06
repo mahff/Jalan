@@ -75,6 +75,7 @@ public class Options {
 						+ vehicle + "<br/> <br/>  " + model1.getValue() + "<br/> <br/> " + "</html>");
 				setSearchinfo(getSearchinfo() + SearchArea.departureField.getText() + ","
 						+ SearchArea.arrivalField.getText() + ",");
+				new FirstZoomLevel(); 
 				image.setURI(new File("singapore.svg").toURI().toString());
 				image.setAutoscrolls(true);
 			}
