@@ -4,17 +4,14 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
 import javax.swing.JPanel;
 import javax.xml.stream.XMLStreamException;
 
-import graphic.SuggestionSummary;
+import graphic.SearchArea;
 import parsing.JALDocument;
 
 public class FirstZoomLevel extends JPanel implements ShapeMap {
-
+	BufferedWriter writer;
 	/**
 	 * 
 	 */
@@ -29,8 +26,7 @@ public class FirstZoomLevel extends JPanel implements ShapeMap {
 	public void generateMap() {
 
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter("singapore.svg"));
-
+			writer = new BufferedWriter(new FileWriter("singapore.svg"));
 			JALDocument document;
 			document = new JALDocument("singapore.jal");
 			ArrayList<String> meta = document.getElementsDataByType("meta");
@@ -44,9 +40,22 @@ public class FirstZoomLevel extends JPanel implements ShapeMap {
 			shapeArea(document, maxLon, maxLat, writer);
 			shapeWays(document, maxLon, maxLat, writer);
 			shapeIsland(document, maxLon, maxLat, writer);
-			writer.write("<text x=\"325\" y=\"225\"\r\n" + "      style=\"fill: RED; stroke: none; font-size: 48;\">\n"
+			writer.write("<text x=\"325\" y=\"225\"\r\n" + "style=\"fill: RED; stroke: none; font-size: 48;\">\n"
 					+ "    SINGAPORE\n" + "</text>");
+			if (!(SearchArea.departureField.getText().isEmpty()) && !(SearchArea.arrivalField.getText().isEmpty())) {
+
+				writer.write(
+						"<image xlink:href=\"locale.svg\" x=\"" + SearchArea.splitSearchData(SearchArea.departureField.getText(), 1)
+								+ "\" y=\"" + SearchArea.splitSearchData(SearchArea.departureField.getText(), 2) + "\" height=\"50px\" width=\"50px\"/>");
+				writer.write("<image xlink:href=\"locale.svg\" x=\"" + SearchArea.splitSearchData(SearchArea.arrivalField.getText(), 1)
+						+ "\" y=\"" + SearchArea.splitSearchData(SearchArea.arrivalField.getText(), 2) + "\" height=\"50px\" width=\"50px\"/>");
+			}
+
+			
+				
+
 			writer.write("</svg>");
+
 			writer.close();
 		} catch (XMLStreamException | IOException e) {
 			// TODO Auto-generated catch block
@@ -118,7 +127,6 @@ public class FirstZoomLevel extends JPanel implements ShapeMap {
 				}
 			}
 		} catch (NumberFormatException | XMLStreamException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -128,8 +136,7 @@ public class FirstZoomLevel extends JPanel implements ShapeMap {
 		try {
 			for (String way : document.getElementsDataByType("way")) {
 				if (way.indexOf("road=motorway") != -1) {
-					writer.write(
-							"\t<polyline style=\"fill: none; stroke: #009405; stroke-width: 1\"  points=\"");
+					writer.write("\t<polyline style=\"fill: none; stroke: #009405; stroke-width: 1\"  points=\"");
 					for (String data : way.split("::")) {
 						if (data.startsWith("subnode=")) {
 							writer.write(Double.parseDouble(data.split(",")[2]) * 2000 + ","
@@ -176,7 +183,6 @@ public class FirstZoomLevel extends JPanel implements ShapeMap {
 				}
 			}
 		} catch (NumberFormatException | XMLStreamException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -198,8 +204,9 @@ public class FirstZoomLevel extends JPanel implements ShapeMap {
 				writer.write("\"/>\n");
 			}
 		} catch (NumberFormatException | XMLStreamException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
+	
 }
