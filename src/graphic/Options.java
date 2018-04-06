@@ -3,7 +3,7 @@ package graphic;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -12,12 +12,20 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerModel;
 
-public class Options {
+import org.apache.batik.swing.JSVGCanvas;
 
+import mapping.FirstZoomLevel;
+
+public class Options {
+	public static JButton okButton = new JButton(" Search ");
+	static JSVGCanvas image = new JSVGCanvas(); 
 	public static Component OptionArea() {
-		JButton okButton = new JButton(" Search ");
+		new FirstZoomLevel(); 
+		image.setURI(new File("singapore.svg").toURI().toString());
+		image.setAutoscrolls(true);
+		
 		Box topBox = Box.createHorizontalBox();
-		final JCheckBox marching = new JCheckBox("Marching");
+		final JCheckBox walking = new JCheckBox("Walking");
 		final JCheckBox bicyling = new JCheckBox("Bicycling");
 		final JCheckBox car = new JCheckBox("Car");
 		final JCheckBox ferry = new JCheckBox("Ferry");
@@ -25,7 +33,7 @@ public class Options {
 		final JCheckBox bus = new JCheckBox("Bus");
 		final SpinnerModel model1 = new SpinnerDateModel();
 		JSpinner spinner1 = new JSpinner(model1);
-		topBox.add(marching);
+		topBox.add(walking);
 		topBox.add(bicyling);
 		topBox.add(ferry);
 		topBox.add(car);
@@ -38,7 +46,7 @@ public class Options {
 			private String searchinfo = "";
 
 			public void actionPerformed(ActionEvent e) {
-				if (marching.isSelected() == true) {
+				if (walking.isSelected() == true) {
 					vehicle += "Marching ";
 					setSearchinfo(getSearchinfo() + "marching,");
 				}
@@ -67,7 +75,8 @@ public class Options {
 						+ vehicle + "<br/> <br/>  " + model1.getValue() + "<br/> <br/> " + "</html>");
 				setSearchinfo(getSearchinfo() + SearchArea.departureField.getText() + ","
 						+ SearchArea.arrivalField.getText() + ",");
-
+				image.setURI(new File("singapore.svg").toURI().toString());
+				image.setAutoscrolls(true);
 			}
 
 			public String getSearchinfo() {
@@ -85,4 +94,10 @@ public class Options {
 		topBox.add(okButton);
 		return topBox;
 	}
+	public static JSVGCanvas returnImage() {
+		
+		return image;
+	}
+
+	
 }
