@@ -1,7 +1,6 @@
 package graphic;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,6 +16,7 @@ public class MapArea {
 
 	
 	public static Component MapFrame() {
+		
 		image = Options.returnImage();
 		image.setURI(new File("singapore.svg").toURI().toString());
 		image.setAutoscrolls(true);
