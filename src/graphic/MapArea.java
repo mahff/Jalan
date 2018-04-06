@@ -17,16 +17,14 @@ public class MapArea {
 
 	
 	public static Component MapFrame() {
-		Container pane = new Container();
 		image = Options.returnImage();
 		image.setURI(new File("singapore.svg").toURI().toString());
 		image.setAutoscrolls(true);
 		DragAndZoom();
 		
 		image.setToolTipText("Map");
-		pane.add(image);
 		
-		return pane;
+		return image;
 	}
 	
 	public static void DragAndZoom() {
