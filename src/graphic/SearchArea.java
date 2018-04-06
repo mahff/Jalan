@@ -9,8 +9,8 @@ import javax.swing.JTextField;
 
 public class SearchArea {
 
-	static JTextField departureField = new JTextField(60),
-			arrivalField = new JTextField(60);
+	public static JTextField departureField = new JTextField(60);
+	public static JTextField arrivalField = new JTextField(60);
 
 	public SearchArea() {
 	}
@@ -27,5 +27,16 @@ public class SearchArea {
 		pane.add(arrivalField);
 
 		return pane;
+	}
+	public static String splitSearchData(String textField, int index) {
+		String temp = ""; 
+		String[] splitData = textField.split("::");
+		String longi = splitData[0];
+		String latt = splitData[1];
+		switch(index) {
+		case 1 : temp =  longi; System.out.println("longi : "+temp); break;  
+		case 2 : temp =  latt; System.out.println("latt : "+temp); break; 
+		}
+		return temp;
 	}
 }
