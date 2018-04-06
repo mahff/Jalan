@@ -10,7 +10,7 @@ import javax.xml.stream.XMLStreamException;
 import graphic.SearchArea;
 import parsing.JALDocument;
 
-public class MapSchapping extends JPanel {
+public class MapShapping extends JPanel {
 	/**
 	 * 
 	 */
@@ -21,7 +21,7 @@ public class MapSchapping extends JPanel {
 	double maxLon;
 	double maxLat;
 
-	public MapSchapping(String zoomLevel) {
+	public MapShapping(String zoomLevel) {
 
 		generateMap(zoomLevel);
 
