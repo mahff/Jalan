@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.xml.stream.XMLStreamException;
 
+import graphic.SearchArea;
 import parsing.JALDocument;
 
 public class SecondZoomLevel extends JPanel implements ShapeMap {
 	/**
 	 * 
 	 */
+	BufferedWriter writer;
 	private static final long serialVersionUID = 1L;
 	
 
@@ -26,8 +28,7 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 	public void generateMap() {
 
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter("singapore.svg"));
-
+			writer = new BufferedWriter(new FileWriter("singapore.svg"));
 			JALDocument document;
 			document = new JALDocument("singapore.jal");
 			ArrayList<String> meta = document.getElementsDataByType("meta");
@@ -35,12 +36,28 @@ public class SecondZoomLevel extends JPanel implements ShapeMap {
 					- Double.parseDouble(meta.get(1).split("::")[3].substring(7));
 			double maxLat = Double.parseDouble(meta.get(1).split("::")[2].substring(7))
 					- Double.parseDouble(meta.get(1).split("::")[4].substring(7));
-			writer.write("<svg style=\"background-color: #D4EFEF\" xmlns=\"http://www.w3.org/2000/svg\" width=\""
-					+ maxLon * 2000 + "\" height=\"" + maxLat * 2000 + "\">\n");
+			writer.write(
+					"<svg style=\"background-color: #D4EFEF\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink= \"http://www.w3.org/1999/xlink\" width=\""
+							+ maxLon * 2000 + "\" height=\"" + maxLat * 2000 + "\">\n");
 			shapeArea(document, maxLon, maxLat, writer);
 			shapeWays(document, maxLon, maxLat, writer);
 			shapeIsland(document, maxLon, maxLat, writer);
+			writer.write("<text x=\"325\" y=\"225\"\r\n" + "style=\"fill: RED; stroke: none; font-size: 48;\">\n"
+					+ "    SINGAPORE\n" + "</text>");
+			if (!(SearchArea.departureField.getText().isEmpty()) && !(SearchArea.arrivalField.getText().isEmpty())) {
+
+				writer.write(
+						"<image xlink:href=\"locale.svg\" x=\"" + SearchArea.splitSearchData(SearchArea.departureField.getText(), 1)
+								+ "\" y=\"" + SearchArea.splitSearchData(SearchArea.departureField.getText(), 2) + "\" height=\"50px\" width=\"50px\"/>");
+				writer.write("<image xlink:href=\"locale.svg\" x=\"" + SearchArea.splitSearchData(SearchArea.arrivalField.getText(), 1)
+						+ "\" y=\"" + SearchArea.splitSearchData(SearchArea.arrivalField.getText(), 2) + "\" height=\"50px\" width=\"50px\"/>");
+			}
+
+			
+				
+
 			writer.write("</svg>");
+
 			writer.close();
 		} catch (XMLStreamException | IOException e) {
 			// TODO Auto-generated catch block
