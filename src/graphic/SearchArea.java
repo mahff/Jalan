@@ -3,16 +3,29 @@ package graphic;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
+
+import parsing.CSVDocument;
 
 public class SearchArea {
 
-	public static JTextField departureField = new JTextField(60);
-	public static JTextField arrivalField = new JTextField(60);
+	private static JComboBox<String> departureField = new JComboBox<String>();
+	private static JComboBox<String> arrivalField = new JComboBox<String>();
+	private static CSVDocument document;
 
-	public SearchArea() {
+
+	public SearchArea() throws IOException {
+		departureField.setEditable(true);
+		arrivalField.setEditable(true);
+		document = new CSVDocument("singapore.sug");
+
 	}
 
 	public static Component SearchFrame() {
@@ -20,7 +33,38 @@ public class SearchArea {
 		pane.setLayout(new GridLayout(0, 1));
 		JLabel departure = new JLabel("Departure : ");
 		JLabel arrival = new JLabel("Arrival : ");
-
+		
+		ActionListener suggestionDeparture = new ActionListener() {
+			Pattern pattern = Pattern.compile((String) departureField.getEditor().getItem());
+			
+			public void actionPerformed(ActionEvent e) {
+				for (String key : document.getNodes().keySet()) {
+					Matcher matcher = pattern.matcher(key);
+					if (matcher.matches() == true) {
+						departureField.addItem(key);
+					}
+			
+			
+				}
+			}
+		};
+		ActionListener suggestionArrival = new ActionListener() {
+			Pattern pattern = Pattern.compile((String) arrivalField.getEditor().getItem());
+			
+			public void actionPerformed(ActionEvent e) {
+				for (String key : document.getNodes().keySet()) {
+					Matcher matcher = pattern.matcher(key);
+					if (matcher.matches() == true) {
+						departureField.addItem(key);
+					}
+			
+			
+				}
+			}
+		};
+		
+		departureField.addActionListener(suggestionDeparture);
+		arrivalField.addActionListener(suggestionArrival);
 		pane.add(departure);
 		pane.add(departureField);
 		pane.add(arrival);
@@ -28,6 +72,7 @@ public class SearchArea {
 
 		return pane;
 	}
+	
 	public static String splitSearchData(String textField, int index) {
 		String temp = ""; 
 		String[] splitData = textField.split("::");
