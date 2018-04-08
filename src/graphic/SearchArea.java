@@ -54,15 +54,51 @@ public class SearchArea {
 
 		return pane;
 	}
+	
+	public static String getCoordByKey(JComboBox<String> field, int index) {
+		String temp = "";
+		String longi = "";
+		String latt = "";
+		String dataSplit[] = new String[3];
+		for (String key : document.getNodes().keySet()) {
+			if (field.getSelectedItem().equals(key)) {
+				temp = document.getNodes().get(key);
+				dataSplit = temp.split(",");
+				if (dataSplit.length >= 3) {
+					longi = dataSplit[1];
+					latt = dataSplit[2];
+				}
+				if (dataSplit.length == 2) {
+					longi = dataSplit[0];
+					latt = dataSplit[1];
+				}
+			}
+		}
+		switch (index) {
+		case 1:
+			temp = longi;
+			System.out.println("longi : " + temp);
+			break;
+		case 2:
+			temp = latt;
+			System.out.println("longi : " + temp);
+			break;
+		}
+		return temp;
+	}
 
 	public static String splitSearchData(String textField, int index) {
-		String temp = ""; 
+		String temp = "";
 		String[] splitData = textField.split("::");
 		String longi = splitData[0];
 		String latt = splitData[1];
-		switch(index) {
-		case 1 : temp =  longi; System.out.println("longi : "+temp); break;  
-		case 2 : temp =  latt; System.out.println("latt : "+temp); break; 
+		switch (index) {
+		case 1:
+			temp = longi;
+			break;
+		case 2:
+			temp = latt;
+			break;
 		}
 		return temp;
 	}
