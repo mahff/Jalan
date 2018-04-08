@@ -4,12 +4,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -21,19 +15,12 @@ import javax.swing.SpinnerModel;
 import org.apache.batik.swing.JSVGCanvas;
 
 import mapping.MapShapping;
-import route.Route;
-import threading.PathFinder;
-import threading.QueueHandler;
-
 
 public class Options {
 	public static JButton okButton = new JButton(" Search ");
-	static JSVGCanvas image = new JSVGCanvas(); 
-	public static Component OptionArea(){
-		new MapShapping("first"); 
-		image.setURI(new File("data/svg/singapore.svg").toURI().toString());
-		image.setAutoscrolls(true);
-		
+	static JSVGCanvas image = new JSVGCanvas();
+
+	public static Component OptionArea() {
 		Box topBox = Box.createHorizontalBox();
 		final JCheckBox walking = new JCheckBox("Walking");
 		final JCheckBox bicyling = new JCheckBox("Bicycling");
@@ -50,14 +37,20 @@ public class Options {
 		topBox.add(metro);
 		topBox.add(bus);
 		topBox.add(spinner1);
+		new MapShapping();
+
+		image.setURI(new File("data/svg/singapore.svg").toURI().toString());
+		image.setAutoscrolls(true);
 
 		ActionListener searchListener = new ActionListener() {
 			private String vehicle = "";
 			private String searchinfo = "";
 
 			public void actionPerformed(ActionEvent e) {
+
 				if (walking.isSelected() == true) {
-					vehicle += "Marching ";
+					if (!(vehicle.contains("Marching ")))
+						vehicle += "Marching ";
 					setSearchinfo(getSearchinfo() + "marching,");
 				}
 				if (bicyling.isSelected() == true) {
@@ -65,44 +58,34 @@ public class Options {
 					setSearchinfo(getSearchinfo() + "bicycling,");
 				}
 				if (ferry.isSelected() == true) {
-					vehicle += "Ferry ";
+					if (!(vehicle.contains("Ferry ")))
+						vehicle += "Ferry ";
 					setSearchinfo(getSearchinfo() + "ferry,");
 				}
 				if (car.isSelected() == true) {
-					vehicle += "Car ";
+					if (!(vehicle.contains("Car ")))
+						vehicle += "Car ";
 					setSearchinfo(getSearchinfo() + "car,");
 				}
 				if (metro.isSelected() == true) {
-					vehicle += "Metro ";
+					if (!(vehicle.contains("Metro ")))
+						vehicle += "Metro ";
 					setSearchinfo(getSearchinfo() + "metro,");
 				}
 				if (bus.isSelected() == true) {
-					vehicle += "Bus ";
+					if (!(vehicle.contains("Bus ")))
+						vehicle += "Bus ";
 					setSearchinfo(getSearchinfo() + "bus,");
 				}
-				SuggestionSummary.summary.setText("<html> Departure : " + SearchArea.departure.getText()
-						+ "<br/> <br/> " + "Arrival :" + SearchArea.arrival.getText() + "<br/> <br/> " + "By : "
-						+ vehicle + "<br/> <br/>  " + model1.getValue() + "<br/> <br/> " + "</html>");
-				setSearchinfo(getSearchinfo() + SearchArea.departure.getText() + ","
-						+ SearchArea.arrival.getText() + ",");
-				new MapShapping(MapShapping.getZoomLevel()); 
+				SuggestionSummary.summary.setText("<html> Departure : " + SearchArea.departureField.getSelectedItem()
+						+ "<br/> <br/> " + "Arrival :" + SearchArea.arrivalField.getSelectedItem() + "<br/> <br/> "
+						+ "By : " + vehicle + "<br/> <br/>  " + model1.getValue() + "<br/> <br/> " + "</html>");
+				new MapShapping();
+				SearchArea.getCoordByKey(1);
+				SearchArea.getCoordByKey(2); 
+				
 				image.setURI(new File("data/svg/singapore.svg").toURI().toString());
 				image.setAutoscrolls(true);
-				
-		    	//ThreadEventListener threadingListener = new ThreadEventListener();
-		    	/*PathFinder finder = new PathFinder();
-		    	//finder.registerThreadEventListener(threadingListener);
-		    	finder.run();
-		    	try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-		    	ArrayList<Route> route = QueueHandler.dequeue();
-		    	if(route!=null) System.out.println(route.get(1).getNodes().get(1));
-				 //ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-				 //final ScheduledFuture<?> senderHandle = scheduler.scheduleAtFixedRate(finder.getInstance(), 1000, 500, TimeUnit.MILLISECONDS);*/
 			}
 
 			public String getSearchinfo() {
@@ -120,10 +103,10 @@ public class Options {
 		topBox.add(okButton);
 		return topBox;
 	}
+
 	public static JSVGCanvas returnImage() {
-		
+
 		return image;
 	}
 
-	
 }
