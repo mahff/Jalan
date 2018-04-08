@@ -4,28 +4,25 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.JPanel;
 import javax.xml.stream.XMLStreamException;
 
 import graphic.SearchArea;
 import parsing.JALDocument;
 
-public class MapShapping extends JPanel {
+public class MapShapping {
 	/**
 	 * 
 	 */
-	static String zoomLevel = ""; 
-	private static final long serialVersionUID = 1L;
 	BufferedWriter writer;
 	JALDocument document;
-	ArrayList<String> meta = new ArrayList<String>();
+	ArrayList<String> meta = new ArrayList<String>(); 
 	double maxLon;
 	double maxLat;
 
-	public MapShapping(String zoom) {
-		
+	public MapShapping() {
+
 		try {
-			
+
 			writer = new BufferedWriter(new FileWriter("data/svg/singapore.svg"));
 			document = new JALDocument("data/maps/singapore.jal");
 			meta = document.getElementsDataByType("meta");
@@ -34,36 +31,25 @@ public class MapShapping extends JPanel {
 			maxLat = Double.parseDouble(meta.get(1).split("::")[2].substring(7))
 					- Double.parseDouble(meta.get(1).split("::")[4].substring(7));
 			writer.write(
-					"<svg style=\"background-color: #D4EFEF\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink= \"http://www.w3.org/1999/xlink\" width=\""
+					"<svg style=\"background-color: #95c8db\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink= \"http://www.w3.org/1999/xlink\" width=\""
 							+ maxLon * 2000 + "\" height=\"" + maxLat * 2000 + "\">\n");
+			shapeArea();
+			shapeWays();
+			shapeIsland();
 			
-			if (zoom == "first") {
-				shapeArea("display = \"none\"" ,"display = \"none\"" );
-				shapeWays("display = \"none\"", "display = \"none\"");
+			if (!(SearchArea.departureField.getSelectedItem().equals(""))
+					&& !(SearchArea.arrivalField.getSelectedItem().equals(""))) {
+				System.out.println("I'm hereeee");
 				writer.write("<text x=\"325\" y=\"225\"\r\n" + "style=\"fill: RED; stroke: none; font-size: 48;\">\n"
 						+ "    SINGAPORE\n" + "</text>");
+				writer.write(
+						"<image xlink:href=\"locale.svg\" x=\"50\" y=\"250\" height=\"50px\" width=\"50px\"/>");
 			}
-			if (zoom == "second") {
-				shapeArea("","display = \"none\"");
-				shapeWays("", "display = \"none\"");
+			else {
+				System.out.println("Noo I'm herrre");
+				writer.write(
+						"<image xlink:href=\"data/svg/loale.png\" x=\"50\" y=\"250\" height=\"50px\" width=\"50px\"/>");
 			}
-			if (zoom == "third") {
-				shapeArea("","");
-				shapeWays("","");
-			}
-			shapeIsland();
-			if (!(SearchArea.departure.getText().isEmpty()) && !(SearchArea.arrival.getText().isEmpty())) {
-
-				writer.write("<image xlink:href=\"locale.svg\" x=\""
-						+ SearchArea.splitSearchData(SearchArea.departure.getText(), 1) + "\" y=\""
-						+ SearchArea.splitSearchData(SearchArea.departure.getText(), 2)
-						+ "\" height=\"50px\" width=\"50px\"/>");
-				writer.write("<image xlink:href=\"locale.svg\" x=\""
-						+ SearchArea.splitSearchData(SearchArea.arrival.getText(), 1) + "\" y=\""
-						+ SearchArea.splitSearchData(SearchArea.arrival.getText(), 2)
-						+ "\" height=\"50px\" width=\"50px\"/>");
-			}
-			
 			
 			writer.write("</svg>");
 			writer.close();
@@ -73,26 +59,13 @@ public class MapShapping extends JPanel {
 
 	}
 
-	public void shapeArea(String zoom2, String zoom3) {
+	public void shapeArea() {
 
 		try {
 			for (String area : document.getElementsDataByType("area")) {
-				if (area.indexOf("building=default") != -1) {
-					writer.write("\t<polygon " + zoom3
-							+ " style=\"fill: #999; stroke: none; stroke-width: 0.1\"  points=\"");
-					for (String data : area.split("::")) {
-						if (data.startsWith("subnode=")) {
 
-							writer.write(Double.parseDouble(data.split(",")[2]) * 2000 + ","
-									+ (maxLat - Double.parseDouble(data.split(",")[1])) * 2000 + " ");
-						}
-					}
-
-					writer.write("\" />\n");
-				}
 				if (area.indexOf("building=hospital") != -1) {
-					writer.write("\t<polygon " + zoom2
-							+ " style=\"fill: #995252; stroke: none; stroke-width: 0.1\"  points=\"");
+					writer.write("\t<polygon style=\"fill: #995252; stroke: none; stroke-width: 0.1\"  points=\"");
 					for (String data : area.split("::")) {
 						if (data.startsWith("subnode=")) {
 							writer.write(Double.parseDouble(data.split(",")[2]) * 2000 + ","
@@ -102,8 +75,7 @@ public class MapShapping extends JPanel {
 					writer.write("\" />\n");
 				}
 				if (area.indexOf("building=commercial") != -1) {
-					writer.write("\t<polygon " + zoom2
-							+ " style=\"fill: #529952; stroke: none; stroke-width: 0.1\"  points=\"");
+					writer.write("\t<polygon  style=\"fill: #529952; stroke: none; stroke-width: 0.1\"  points=\"");
 					for (String data : area.split("::")) {
 						if (data.startsWith("subnode=")) {
 
@@ -114,8 +86,7 @@ public class MapShapping extends JPanel {
 					writer.write("\" />\n");
 				}
 				if (area.indexOf("building=hotel") != -1) {
-					writer.write("\t<polygon " + zoom2
-							+ "  style=\"fill: #525299; stroke: none; stroke-width: 0.1\"  points=\"");
+					writer.write("\t<polygon  style=\"fill: #525299; stroke: none; stroke-width: 0.1\"  points=\"");
 					for (String data : area.split("::")) {
 						if (data.startsWith("subnode=")) {
 							writer.write(Double.parseDouble(data.split(",")[2]) * 2000 + ","
@@ -141,7 +112,7 @@ public class MapShapping extends JPanel {
 
 	}
 
-	public void shapeWays(String zoom2, String zoom3) {
+	public void shapeWays() {
 		try {
 			for (String way : document.getElementsDataByType("way")) {
 				if (way.indexOf("road=motorway") != -1) {
@@ -166,8 +137,7 @@ public class MapShapping extends JPanel {
 					writer.write("\" />\n");
 				}
 				if (way.indexOf("road=secondary") != -1) {
-					writer.write("\t<polyline " + zoom2
-							+ "  style=\"fill: none; stroke: #00DEDE; stroke-width: 0.7\"  points=\"");
+					writer.write("\t<polyline  style=\"fill: none; stroke: #00DEDE; stroke-width: 0.7\"  points=\"");
 					for (String data : way.split("::")) {
 						if (data.startsWith("subnode=")) {
 							writer.write(Double.parseDouble(data.split(",")[2]) * 2000 + ","
@@ -177,8 +147,7 @@ public class MapShapping extends JPanel {
 					writer.write("\" />\n");
 				}
 				if (way.indexOf("road=tertiary") != -1) {
-					writer.write("\t<polyline " + zoom3
-							+ "  style=\"fill: none; stroke: #9E0052; stroke-width: 0.4\"  points=\"");
+					writer.write("\t<polyline  style=\"fill: none; stroke: #9E0052; stroke-width: 0.4\"  points=\"");
 					for (String data : way.split("::")) {
 						if (data.startsWith("subnode=")) {
 
@@ -214,12 +183,6 @@ public class MapShapping extends JPanel {
 		} catch (NumberFormatException | XMLStreamException | IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public static String getZoomLevel() {
-		System.out.println(zoomLevel);
-		return zoomLevel; 
-		
 	}
 
 }
