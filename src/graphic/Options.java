@@ -22,12 +22,12 @@ public class Options {
 
 	public static Component OptionArea() {
 		Box topBox = Box.createHorizontalBox();
-		final JCheckBox walking = new JCheckBox("Walking");
-		final JCheckBox bicyling = new JCheckBox("Bicycling");
-		final JCheckBox car = new JCheckBox("Car");
-		final JCheckBox ferry = new JCheckBox("Ferry");
-		final JCheckBox metro = new JCheckBox("Metro");
-		final JCheckBox bus = new JCheckBox("Bus");
+		final JCheckBox walking = new JCheckBox("Walking       ");
+		final JCheckBox bicyling = new JCheckBox("Bicycling	      ");
+		final JCheckBox car = new JCheckBox("Car       ");
+		final JCheckBox ferry = new JCheckBox("Ferry       ");
+		final JCheckBox metro = new JCheckBox("Metro       ");
+		final JCheckBox bus = new JCheckBox("Bus        ");
 		final SpinnerModel data = new SpinnerDateModel();
 		JSpinner spinner1 = new JSpinner(data);
 		topBox.add(walking);
@@ -82,20 +82,24 @@ public class Options {
 					if (SearchArea.departureField.getSelectedItem().toString().contains("::")
 							&& (SearchArea.arrivalField.getSelectedItem().toString().contains("::"))) {
 						setSearchinfo(getSearchinfo() + SearchArea.departureField.getSelectedItem().toString() + "::"
-								+ SearchArea.arrivalField.getSelectedItem().toString()+",");
+								+ SearchArea.arrivalField.getSelectedItem().toString() + ",");
 					} else {
-						setSearchinfo(getSearchinfo() + Double.parseDouble(SearchArea.getCoordByKey(SearchArea.departureField, 1)) + "::"
+						setSearchinfo(getSearchinfo()
+								+ Double.parseDouble(SearchArea.getCoordByKey(SearchArea.departureField, 1)) + "::"
 								+ ((Double.parseDouble(SearchArea.getCoordByKey(SearchArea.departureField, 2)))) + ","
 								+ Double.parseDouble(SearchArea.getCoordByKey(SearchArea.arrivalField, 1)) + "::"
-								+ ((Double.parseDouble(SearchArea.getCoordByKey(SearchArea.arrivalField, 2))))+",");
+								+ ((Double.parseDouble(SearchArea.getCoordByKey(SearchArea.arrivalField, 2)))) + ",");
 
 					}
 				}
 				SuggestionSummary.summary.setText("<html> Departure : " + SearchArea.departureField.getSelectedItem()
 						+ "<br/> <br/> " + "Arrival :" + SearchArea.arrivalField.getSelectedItem() + "<br/> <br/> "
 						+ "By : " + vehicle + "<br/> <br/>  " + data.getValue() + "<br/> <br/> " + "</html>");
+				new MapShapping();
 
-				System.out.println("test " + searchinfo);
+				image.setURI(new File("data/svg/singapore.svg").toURI().toString());
+				image.setAutoscrolls(true);
+
 			}
 
 			public String getSearchinfo() {
@@ -105,7 +109,6 @@ public class Options {
 			public void setSearchinfo(String searchinfo) {
 
 				this.searchinfo = searchinfo;
-				System.out.println(searchinfo);
 
 			}
 
