@@ -1,6 +1,7 @@
 package program;
 
-import java.util.ArrayList;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
@@ -10,8 +11,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import graphic.Options;
 import graphic.SearchArea;
 import graphic.SuggestionSummary;
-import route.Route;
-import threading.PathFinder;
 
 public class Jalan extends JFrame {
 	
@@ -22,10 +21,18 @@ public class Jalan extends JFrame {
 		JSplitPane sp2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, sp, SuggestionSummary.SuggestionSummaryFrame());
 		sp.setDividerLocation(120);
 		sp2.setDividerLocation(200);
+		sp.setEnabled(false); 
+		sp2.setEnabled(false);
 		JFrame frame = new JFrame();
+		frame.setResizable(false);
 		frame.add(sp2);
 		frame.setSize(1312,883);
 		frame.setVisible(true);
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				frame.dispose();
+			}
+		});
 	}
     
     public static void main(String[] args) {
