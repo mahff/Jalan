@@ -15,7 +15,7 @@ public class MapShapping {
 	 */
 	BufferedWriter writer;
 	JALDocument document;
-	ArrayList<String> meta = new ArrayList<String>(); 
+	ArrayList<String> meta = new ArrayList<String>();
 	double maxLon;
 	double maxLat;
 
@@ -36,21 +36,40 @@ public class MapShapping {
 			shapeArea();
 			shapeWays();
 			shapeIsland();
-			
-			if (!(SearchArea.departureField.getSelectedItem().equals(""))
-					&& !(SearchArea.arrivalField.getSelectedItem().equals(""))) {
-				System.out.println("I'm hereeee");
-				writer.write("<text x=\"325\" y=\"225\"\r\n" + "style=\"fill: RED; stroke: none; font-size: 48;\">\n"
-						+ "    SINGAPORE\n" + "</text>");
-				writer.write(
-						"<image xlink:href=\"locale.svg\" x=\"50\" y=\"250\" height=\"50px\" width=\"50px\"/>");
+
+			if (!(SearchArea.departureField.getSelectedItem().toString().equals(""))
+					&& !(SearchArea.arrivalField.getSelectedItem().toString().equals(""))) {
+				if (SearchArea.departureField.getSelectedItem().toString().contains("::")
+						&& (SearchArea.arrivalField.getSelectedItem().toString().contains("::"))) {
+					writer.write("<image xlink:href=\"departure.svg\" x=\""
+							+ SearchArea.splitSearchData(SearchArea.departureField.getSelectedItem().toString(), 1)
+							+ "\" y=\""
+							+ SearchArea.splitSearchData(SearchArea.departureField.getSelectedItem().toString(), 2)
+							+ "\" height=\"50px\" width=\"50px\"/>");
+					writer.write("<image xlink:href=\"arrival.svg\" x=\""
+							+ SearchArea.splitSearchData(SearchArea.arrivalField.getSelectedItem().toString(), 1)
+							+ "\" y=\""
+							+ SearchArea.splitSearchData(SearchArea.arrivalField.getSelectedItem().toString(), 2)
+							+ "\" height=\"50px\" width=\"50px\"/>");
+				}
+
+				else {
+
+					System.out.println("I'm herrreerereeeree");
+					writer.write("<image xlink:href=\"arrival.svg\" x=\""
+							+ Double.parseDouble(SearchArea.getCoordByKey(SearchArea.departureField, 1)) * 2000
+							+ "\" y=\""
+							+ ((Double.parseDouble(SearchArea.getCoordByKey(SearchArea.departureField, 2)) * 2000))
+							+ "\" height=\"50px\" width=\"50px\"/>");
+					writer.write("<image xlink:href=\"departure.svg\" x=\""
+							+ Double.parseDouble(SearchArea.getCoordByKey(SearchArea.arrivalField, 1)) * 2000
+							+ "\" y=\""
+							+ ((Double.parseDouble(SearchArea.getCoordByKey(SearchArea.arrivalField, 2)) * 2000))
+							+ "\" height=\"50px\" width=\"50px\"/>");
+				}
+
 			}
-			else {
-				System.out.println("Noo I'm herrre");
-				writer.write(
-						"<image xlink:href=\"data/svg/loale.png\" x=\"50\" y=\"250\" height=\"50px\" width=\"50px\"/>");
-			}
-			
+
 			writer.write("</svg>");
 			writer.close();
 		} catch (XMLStreamException | IOException e) {
